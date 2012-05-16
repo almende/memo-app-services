@@ -1,5 +1,6 @@
 package com.almende.appservices.model;
 
+import java.util.Date;
 import java.util.Hashtable;
 
 import com.chap.memo.memoNodes.MemoNode;
@@ -47,9 +48,11 @@ public class Agent {
 	}
 	public void setLat(String propValue){
 		myNode.setPropertyValue("lat", propValue);
+		myNode.setPropertyValue("seen", new Long(new Date().getTime()).toString());
 	}
 	public void setLon(String propValue){
 		myNode.setPropertyValue("lon", propValue);
+		myNode.setPropertyValue("seen", new Long(new Date().getTime()).toString());
 	}
 
 }
