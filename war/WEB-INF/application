@@ -1,2 +1,2 @@
-com.almende.appservices.PersAgent
+com.almende.appservices.proxy.AgentProxy
 com.almende.appservices.proxy.GeoRSSProxy

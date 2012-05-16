@@ -72,7 +72,7 @@ public class GeoRSSProxy {
 			Date date= new Date();
 			date.setTime(new Long(agent.getPropertyValue("seen")));
 			entry.setPublishedDate(date);
-			entry.setLink("http://memo-app-services.appspot.com/geoRSS");
+			entry.setLink("http://memo-app-services.appspot.com/agent/"+agent.getId().toString());
 			
 			GeoRSSModule geoRSSModule=new SimpleModuleImpl();
 			if (rssType != null){

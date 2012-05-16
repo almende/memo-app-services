@@ -5,14 +5,25 @@ import java.util.Hashtable;
 import com.chap.memo.memoNodes.MemoNode;
 import com.eaio.uuid.UUID;
 
+import flexjson.JSON;
+
 public class Agent {
 	MemoNode myNode=null;
 	Hashtable<String,String> resources = new Hashtable<String,String>();
 	
 	public Agent(){
-		this.myNode = new MemoNode("agent");
 	}
-	
+	public Agent initNew(){
+		this.myNode=new MemoNode("agent");
+		return this;
+	}
+	public static Agent create(){
+		return new Agent().initNew();
+	}
+	@JSON(include = false)
+	public MemoNode getNode(){
+		return this.myNode;
+	}
 	public Agent(String uuid){
 		this.myNode=new MemoNode(new UUID(uuid));
 	}
