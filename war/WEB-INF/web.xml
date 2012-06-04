@@ -45,7 +45,7 @@
 
 	<servlet>
 		<servlet-name>JSON</servlet-name>
-		<servlet-class>com.chap.memo.memoNodes.JsonExport</servlet-class>
+		<servlet-class>com.chap.memo.memoNodes.servlet.MemoJSONServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>JSON</servlet-name>
