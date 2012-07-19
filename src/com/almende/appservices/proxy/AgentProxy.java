@@ -1,5 +1,6 @@
 package com.almende.appservices.proxy;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
@@ -21,6 +22,23 @@ import flexjson.JSONDeserializer;
 @Path("/agent")
 public class AgentProxy {
 	protected final static Logger log = Logger.getLogger(AgentProxy.class.getName());
+
+	@GET
+	@Produces("application/json")
+	public Response getAgents(){
+		try {
+			MemoNode baseNode = MemoNode.getRootNode().getChildByStringValue("geoRSS demo");
+			ArrayList<MemoNode> agents = baseNode.getChildren();
+			ArrayList<String> result =  new ArrayList<String>(agents.size());
+			for (MemoNode agent : agents){
+				result.add(agent.getId().toString());
+			}
+			return Response.ok(new JSONSerializer().exclude("*.class").serialize(result)).build();
+		} catch (Exception e){
+			log.warning("Exception in handling getAgent:"+e.getMessage());
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+	}
 	
 	@POST
 	@Consumes("text/plain,application/json")
@@ -63,5 +81,20 @@ public class AgentProxy {
 		//Done workaround
 		
 		return Response.ok(agent.getUuid()).build();
-	}		
+	}	
+	
+	@Path("/{uuid}")	
+	@POST
+	@Consumes("text/plain,application/json")
+	@Produces("text/plain")
+	public Response createAgentWithId(String json){
+		Agent agent = new JSONDeserializer<Agent>().deserializeInto(json, Agent.create());
+		
+		//Until I have group support:
+		MemoNode baseNode = MemoNode.getRootNode().getChildByStringValue("geoRSS demo");
+		baseNode.addChild(agent.getNode());
+		//Done workaround
+		
+		return Response.ok(agent.getUuid()).build();
+	}
 }

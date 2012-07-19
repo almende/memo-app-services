@@ -7,13 +7,13 @@
 	<filter>
 		<filter-name>CORS</filter-name>
 		<filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
-		<init-param>
+    	<init-param>
 		    <param-name>cors.supportedHeaders</param-name>
-		    <param-value>Content-Type, Accept, Origin</param-value>
+		    <param-value>Content-Type, Accept, Origin, x-session_id</param-value>
 		</init-param>
 		<init-param>
 		    <param-name>cors.supportedMethods</param-name>
-		    <param-value>GET, POST, HEAD, PUT, DELETE</param-value>
+		    <param-value>GET, POST, HEAD, PUT, DELETE, OPTIONS</param-value>
 		</init-param>
 		<init-param>
 		    <param-name>cors.maxAge</param-name>
