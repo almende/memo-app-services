@@ -1,6 +1,6 @@
 package com.almende.appservices.proxy;
 
-import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,44 +10,27 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import org.jdom.Element;
+
 import com.chap.memo.memoNodes.MemoNode;
+import com.sun.syndication.feed.WireFeed;
+import com.sun.syndication.feed.module.Module;
+import com.sun.syndication.feed.module.georss.GMLModuleImpl;
 import com.sun.syndication.feed.module.georss.GeoRSSModule;
 import com.sun.syndication.feed.module.georss.SimpleModuleImpl;
 import com.sun.syndication.feed.module.georss.W3CGeoModuleImpl;
-import com.sun.syndication.feed.module.georss.GMLModuleImpl;
 import com.sun.syndication.feed.module.georss.geometries.Position;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
-import com.sun.syndication.io.SyndFeedOutput;
+import com.sun.syndication.io.WireFeedOutput;
 
 @Path("/geoRSS")
 public class GeoRSSProxy {
 	
 	public GeoRSSProxy(){
-		//generate example memo db
-		MemoNode rootNode = MemoNode.getRootNode();
-		if (rootNode.getChildByStringValue("geoRSS demo") == null){
-			System.out.println("Generating test/demo data");
-			MemoNode baseNode = rootNode.addChild(new MemoNode("geoRSS demo"));
-			baseNode.addChild(new MemoNode("agent"))
-					.setPropertyValue("name", "PoliceOfficer#324353")
-					.setPropertyValue("lat", "77.58601")
-					.setPropertyValue("lon", "-52.4484")
-					.setPropertyValue("seen", new Long(new Date().getTime()).toString());
-			baseNode.addChild(new MemoNode("agent"))
-					.setPropertyValue("name", "AmbulanceMedic#3502")
-					.setPropertyValue("lat", "77.585957")
-					.setPropertyValue("lon", "-52.448461")
-					.setPropertyValue("seen", new Long(new Date().getTime()).toString());
-			baseNode.addChild(new MemoNode("agent"))
-					.setPropertyValue("name", "Firefighter#324333")
-					.setPropertyValue("lat", "77.585957")
-					.setPropertyValue("lon", "-52.448461")
-					.setPropertyValue("seen", new Long(new Date().getTime()).toString());
-			MemoNode.flushDB();
-		}
+
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -59,12 +42,13 @@ public class GeoRSSProxy {
 			feed.setFeedType(feedType);
 		} else {
 			feed.setFeedType("atom_0.3");
+			feedType="atom_0.3";
 		}
 		feed.setTitle("MemoGeoRSS");
 		feed.setDescription("GeoRSS output stream for Memo");
 		feed.setLink("http://memo-app-services.appspot.com/geoRSS");
 		
-		MemoNode baseNode = MemoNode.getRootNode().getChildByStringValue("geoRSS demo");
+		MemoNode baseNode = MemoNode.getRootNode().getChildByStringValue("Memo-appservices demo");
 		List<SyndEntry> entries = feed.getEntries();		
 		for (MemoNode agent: baseNode.getChildren()){
 			SyndEntry entry = new SyndEntryImpl();
@@ -86,22 +70,39 @@ public class GeoRSSProxy {
 			newPos.setLatitude(new Double(agent.getPropertyValue("lat")));
 			newPos.setLongitude(new Double(agent.getPropertyValue("lon")));
 			geoRSSModule.setPosition(newPos);
+			
+			List<Module> modules = entry.getModules();
+			modules.add(geoRSSModule);
+			
+			List<Element> foreignMarkup = new ArrayList<Element>();
+			Element myElement = new Element("type");
+			myElement.setText(agent.getPropertyValue("resType"));
+			foreignMarkup.add(myElement);
+			
+			myElement = new Element("state");
+			myElement.setText(agent.getPropertyValue("state"));
+			foreignMarkup.add(myElement);
+			
+			myElement = new Element("taskDescription");
+			myElement.setText(agent.getPropertyValue("taskDescription"));
+			foreignMarkup.add(myElement);
 
-			entry.getModules().add(geoRSSModule);
+			entry.setForeignMarkup(foreignMarkup);
+	
 			entries.add(entry);
 		}
-		
-		StringWriter w = new StringWriter();
-		SyndFeedOutput output = new SyndFeedOutput();
+	
+		WireFeedOutput woutput = new WireFeedOutput();
+	    WireFeed wirefeed = feed.createWireFeed(feedType);
+	    String result = "";
 		try {
-			output.output(feed, w);
+			
+			result = woutput.outputString(wirefeed);
 		} catch (Exception e) {
 			System.out.println("Error writing feed to string:"+e.getMessage());
 			e.printStackTrace();
 		}
-		w.flush();
-		return Response.ok(w.toString()).build();
+		return Response.ok(result).build();
 	}
-
 	
 }

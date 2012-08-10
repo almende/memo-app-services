@@ -51,7 +51,19 @@
 		<servlet-name>JSON</servlet-name>
 		<url-pattern>/json</url-pattern>
 	</servlet-mapping>
-
+	<servlet>
+		<servlet-name>Memo</servlet-name>
+		<servlet-class>com.chap.memo.memoNodes.servlet.MemoTestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Memo</servlet-name>
+		<url-pattern>/memo</url-pattern>
+	</servlet-mapping>
+	
+	<listener>
+                <listener-class>com.almende.appservices.InitDemoListener</listener-class>
+    </listener>
+	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
@@ -81,6 +93,15 @@
 		<web-resource-collection>
 			<web-resource-name>appstats</web-resource-name>
 			<url-pattern>/appstats/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Memo</web-resource-name>
+			<url-pattern>/memo</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>admin</role-name>

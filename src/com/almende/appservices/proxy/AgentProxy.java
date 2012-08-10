@@ -20,6 +20,7 @@ import flexjson.JSONSerializer;
 import flexjson.JSONDeserializer;
 
 @Path("/agent")
+//See: TaskProxy.java for /agent/{uuid}/tasks
 public class AgentProxy {
 	protected final static Logger log = Logger.getLogger(AgentProxy.class.getName());
 
