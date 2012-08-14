@@ -28,9 +28,10 @@ import com.sun.syndication.io.WireFeedOutput;
 
 @Path("/geoRSS")
 public class GeoRSSProxy {
+	static MemoNode baseNode; 
 	
 	public GeoRSSProxy(){
-
+		baseNode = MemoNode.getRootNode().getChildByStringValue("Memo-appservices demo").getChildByStringValue("agents");
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -48,7 +49,6 @@ public class GeoRSSProxy {
 		feed.setDescription("GeoRSS output stream for Memo");
 		feed.setLink("http://memo-app-services.appspot.com/geoRSS");
 		
-		MemoNode baseNode = MemoNode.getRootNode().getChildByStringValue("Memo-appservices demo");
 		List<SyndEntry> entries = feed.getEntries();		
 		for (MemoNode agent: baseNode.getChildren()){
 			SyndEntry entry = new SyndEntryImpl();

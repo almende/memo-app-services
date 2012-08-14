@@ -28,11 +28,12 @@ public class InitDemoListener implements ServletContextListener  {
 			System.out.println("Generating test/demo data");
 			MemoNode baseNode = rootNode.addChild(new MemoNode("Memo-appservices demo"));
 			MemoNode tasks = baseNode.addChild(new MemoNode("tasks"));
+			MemoNode agents = baseNode.addChild(new MemoNode("agents"));
 			
 			MemoNode task = tasks.addChild(new MemoNode("task"));
 			task.setPropertyValue("description", "Go to designated location");
-			task.setPropertyValue("locationLat", "47.075765");
-			task.setPropertyValue("locationLon", "9.392449");
+			task.setPropertyValue("lat", "47.075765");
+			task.setPropertyValue("lon", "9.392449");
 			task.setPropertyValue("duration", "360");
 			task.setPropertyValue("eta", "1345586369");
 			MemoNode resources = task.addChild(new MemoNode("resources"));
@@ -46,34 +47,41 @@ public class InitDemoListener implements ServletContextListener  {
 			MemoNode rejected = humans.addChild(new MemoNode("rejected"));
 			
 			baseNode.addChild(new MemoNode("agent"))
+					.setParent(agents)
 					.setPropertyValue("name", "PoliceOfficer#324353")
 					.setPropertyValue("lat", "47.091895")
 					.setPropertyValue("lon", "9.344835")
 					.setPropertyValue("resType", "PoliceOfficer")
 					.setPropertyValue("state", "Busy")
 					.setPropertyValue("taskDescription", "Go to designated location")
-					.setPropertyValue("seen", new Long(new Date().getTime()).toString()
-			).addParent(offered);
+					.setPropertyValue("seen", new Long(new Date().getTime()).toString())
+					.setChild(new MemoNode("tasks").setChild(task))
+					.setParent(offered)
+			;
 			
 			baseNode.addChild(new MemoNode("agent"))
+					.setParent(agents)
 					.setPropertyValue("name", "Ambulance#3502")
 					.setPropertyValue("lat", "47.089207")
 					.setPropertyValue("lon", "9.34595")
 					.setPropertyValue("resType", "Ambulance")
 					.setPropertyValue("state", "Free")
 					.setPropertyValue("taskDescription", "")
-					.setPropertyValue("seen", new Long(new Date().getTime()).toString()
-			).addParent(cars);
+					.setPropertyValue("seen", new Long(new Date().getTime()).toString())
+					.setChild(new MemoNode("tasks").setChild(task))
+					.addParent(cars);
 			
 			baseNode.addChild(new MemoNode("agent"))
+					.setParent(agents)
 					.setPropertyValue("name", "Firefighter#324333")
 					.setPropertyValue("lat", "47.097351")
 					.setPropertyValue("lon", "9.356282")
 					.setPropertyValue("resType", "FireFighter")
 					.setPropertyValue("state", "Busy")
 					.setPropertyValue("taskDescription", "Go to designated location")
-					.setPropertyValue("seen", new Long(new Date().getTime()).toString()
-			).addParent(offered);
+					.setPropertyValue("seen", new Long(new Date().getTime()).toString())
+					.setChild(new MemoNode("tasks").setChild(task))
+					.addParent(offered);
 			MemoNode.flushDB();
 		}
 	}

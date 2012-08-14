@@ -1,2 +1,3 @@
 com.almende.appservices.proxy.AgentProxy
 com.almende.appservices.proxy.GeoRSSProxy
+com.almende.appservices.proxy.TaskProxy

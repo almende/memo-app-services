@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.almende.appservices.InitDemoListener;
 import com.almende.appservices.model.Agent;
 import com.chap.memo.memoNodes.MemoNode;
 
@@ -24,11 +25,15 @@ import flexjson.JSONDeserializer;
 public class AgentProxy {
 	protected final static Logger log = Logger.getLogger(AgentProxy.class.getName());
 
+	static MemoNode baseNode =null;
+	public AgentProxy(){
+		InitDemoListener.initDemoModel();
+		baseNode = MemoNode.getRootNode().getChildByStringValue("Memo-appservices demo").getChildByStringValue("agents");
+	}
 	@GET
 	@Produces("application/json")
 	public Response getAgents(){
 		try {
-			MemoNode baseNode = MemoNode.getRootNode().getChildByStringValue("geoRSS demo");
 			ArrayList<MemoNode> agents = baseNode.getChildren();
 			ArrayList<String> result =  new ArrayList<String>(agents.size());
 			for (MemoNode agent : agents){
@@ -48,7 +53,6 @@ public class AgentProxy {
 		Agent agent = new JSONDeserializer<Agent>().deserializeInto(json, Agent.create());
 		
 		//Until I have group support:
-		MemoNode baseNode = MemoNode.getRootNode().getChildByStringValue("geoRSS demo");
 		baseNode.addChild(agent.getNode());
 		//Done workaround
 		
@@ -77,7 +81,6 @@ public class AgentProxy {
 		agent = new JSONDeserializer<Agent>().deserializeInto(json, agent);
 
 		//Until I have group support:
-		MemoNode baseNode = MemoNode.getRootNode().getChildByStringValue("geoRSS demo");
 		baseNode.addChild(agent.getNode());
 		//Done workaround
 		
@@ -92,7 +95,6 @@ public class AgentProxy {
 		Agent agent = new JSONDeserializer<Agent>().deserializeInto(json, Agent.create());
 		
 		//Until I have group support:
-		MemoNode baseNode = MemoNode.getRootNode().getChildByStringValue("geoRSS demo");
 		baseNode.addChild(agent.getNode());
 		//Done workaround
 		
