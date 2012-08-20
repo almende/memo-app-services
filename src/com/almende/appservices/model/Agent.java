@@ -5,8 +5,7 @@ import java.util.Hashtable;
 
 import com.chap.memo.memoNodes.MemoNode;
 import com.eaio.uuid.UUID;
-
-import flexjson.JSON;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Agent {
 	MemoNode myNode=null;
@@ -21,7 +20,7 @@ public class Agent {
 	public static Agent create(){
 		return new Agent().initNew();
 	}
-	@JSON(include = false)
+	@JsonIgnore
 	public MemoNode getNode(){
 		return this.myNode;
 	}
@@ -40,6 +39,10 @@ public class Agent {
 	public String getLon(){
 		return myNode.getPropertyValue("lon");
 	}
+	public String getType(){
+		return myNode.getPropertyValue("resType");
+	}
+	
 	public void setUuid(String uuid){
 		this.myNode = new MemoNode(uuid);
 	}
@@ -53,6 +56,9 @@ public class Agent {
 	public void setLon(String propValue){
 		myNode.setPropertyValue("lon", propValue);
 		myNode.setPropertyValue("seen", new Long(new Date().getTime()).toString());
+	}
+	public void setType(String resType){
+		myNode.setPropertyValue("resType", resType);
 	}
 
 }

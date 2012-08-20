@@ -14,17 +14,17 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.codec.digest.DigestUtils;
+
 import com.chap.memo.memoNodes.MemoNode;
-
-import flexjson.JSONDeserializer;
-import flexjson.JSONSerializer;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Path("/")
 public class PersAgent {
 	protected final static Logger log = Logger.getLogger(PersAgent.class.getName());
 	private MemoNode myNode= null;
-	
+	static final ObjectMapper om = new ObjectMapper();
+
 	public static PersAgent getPersAgentById(String uuid){
 		PersAgent result = new PersAgent();
 		HashMap<String,String> arguments = new HashMap<String,String>();
@@ -102,16 +102,24 @@ public class PersAgent {
 				result.put(res.getStringValue(), value.getStringValue());
 			}
 		} else {
-			result = new JSONDeserializer<HashMap<String,String>>()
-					.use(null,HashMap.class).use("values",String.class).deserialize( tags );
-			for (Map.Entry<String, String> e : result.entrySet()) {
-				String value=resNode.getPropertyValue(e.getKey());
-				if (value != null && !value.equals("")){
-					e.setValue(value);
+			try {
+				result = om.readValue(tags,new TypeReference<Map<String,String>>(){});
+				for (Map.Entry<String, String> e : result.entrySet()) {
+					String value=resNode.getPropertyValue(e.getKey());
+					if (value != null && !value.equals("")){
+						e.setValue(value);
+					}
 				}
+			} catch (Exception e){
+				log.warning("Couldn't parse tags!");
 			}
 		}
-		return Response.ok(new JSONSerializer().exclude("*.class").serialize(result)).build();
+		try {
+			return Response.ok(om.writeValueAsString(result)).build();
+		} catch (Exception e) {
+			log.warning("Couldn't get resources!"+e.getMessage());
+		}
+		return Response.serverError().build();
 	}
 	
 	@GET

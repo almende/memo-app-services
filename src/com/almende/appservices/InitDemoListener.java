@@ -1,6 +1,9 @@
 package com.almende.appservices;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -21,6 +24,25 @@ public class InitDemoListener implements ServletContextListener  {
 		InitDemoListener.initDemoModel();
 	}
 
+	public static MemoNode addNode(String value, Map<String,String> properties){
+		MemoNode res = new MemoNode(value);
+		for (Entry<String,String> ent: properties.entrySet()){
+			res.setPropertyValue(ent.getKey(),ent.getValue());
+		}
+		return res;
+	}
+	public static MemoNode addTask(MemoNode tasks, MemoNode agents, Map<String,String> properties){
+		MemoNode task = addNode("task",properties);
+		MemoNode resources = task.addChild(new MemoNode("resources"));
+		MemoNode humans = resources.addChild(new MemoNode("human"));
+		
+		resources.addChild(new MemoNode("car"));
+		humans.setChild(new MemoNode("accepted"))
+			  .setChild(new MemoNode("offered"))
+			  .setChild(new MemoNode("rejected"));
+		return task;
+	}
+	
 	public static void initDemoModel(){
 		//generate example memo db
 		MemoNode rootNode = MemoNode.getRootNode();
@@ -30,58 +52,130 @@ public class InitDemoListener implements ServletContextListener  {
 			MemoNode tasks = baseNode.addChild(new MemoNode("tasks"));
 			MemoNode agents = baseNode.addChild(new MemoNode("agents"));
 			
-			MemoNode task = tasks.addChild(new MemoNode("task"));
-			task.setPropertyValue("description", "Go to designated location");
-			task.setPropertyValue("lat", "47.075765");
-			task.setPropertyValue("lon", "9.392449");
-			task.setPropertyValue("duration", "360");
-			task.setPropertyValue("eta", "1345586369");
-			MemoNode resources = task.addChild(new MemoNode("resources"));
-			MemoNode humans = resources.addChild(new MemoNode("human"));
-			MemoNode cars = resources.addChild(new MemoNode("car"));
+			Map<String,String> properties = new HashMap<String,String>();
+			properties.put("description", "Go to designated location");
+			properties.put("lat", "47.075765");
+			properties.put("lon", "9.392449");
+			properties.put("duration", "360");
+			properties.put("eta", "1345586369");
+			MemoNode task = addTask(tasks,agents,properties);
 			
-			@SuppressWarnings("unused")
-			MemoNode accepted = humans.addChild(new MemoNode("accepted"));
-			MemoNode offered = humans.addChild(new MemoNode("offered"));
-			@SuppressWarnings("unused")
-			MemoNode rejected = humans.addChild(new MemoNode("rejected"));
-			
-			baseNode.addChild(new MemoNode("agent"))
+			properties.clear();
+			properties.put("name", "PoliceOfficer#324353");
+			properties.put("lat", "47.091895");
+			properties.put("lon", "9.344835");
+			properties.put("resType", "PoliceOfficer");
+			properties.put("state", "Busy");
+			properties.put("taskDescription", task.getPropertyValue("description"));
+			properties.put("seen", new Long(new Date().getTime()).toString());
+			addNode("agent",properties)
 					.setParent(agents)
-					.setPropertyValue("name", "PoliceOfficer#324353")
-					.setPropertyValue("lat", "47.091895")
-					.setPropertyValue("lon", "9.344835")
-					.setPropertyValue("resType", "PoliceOfficer")
-					.setPropertyValue("state", "Busy")
-					.setPropertyValue("taskDescription", "Go to designated location")
-					.setPropertyValue("seen", new Long(new Date().getTime()).toString())
 					.setChild(new MemoNode("tasks").setChild(task))
-					.setParent(offered)
+					.setParent(task.getChildByStringValue("resources").getChildByStringValue("human").getChildByStringValue("offered"))
 			;
 			
-			baseNode.addChild(new MemoNode("agent"))
+			properties.clear();
+			properties.put("name", "PoliceCar#3502");
+			properties.put("lat", "47.089207");
+			properties.put("lon", "9.34595");
+			properties.put("resType", "PoliceCar");
+			properties.put("state", "Free");
+			properties.put("taskDescription", "");
+			properties.put("seen", new Long(new Date().getTime()).toString());
+			addNode("agent",properties)
 					.setParent(agents)
-					.setPropertyValue("name", "Ambulance#3502")
-					.setPropertyValue("lat", "47.089207")
-					.setPropertyValue("lon", "9.34595")
-					.setPropertyValue("resType", "Ambulance")
-					.setPropertyValue("state", "Free")
-					.setPropertyValue("taskDescription", "")
-					.setPropertyValue("seen", new Long(new Date().getTime()).toString())
 					.setChild(new MemoNode("tasks").setChild(task))
-					.addParent(cars);
+					.addParent(task.getChildByStringValue("resources").getChildByStringValue("car"))
+			;
+
+			properties.clear();
+			properties.put("name", "Firefighter#324333");
+			properties.put("lat", "47.097351");
+			properties.put("lon", "9.356282");
+			properties.put("resType", "FireFighter");
+			properties.put("state", "Busy");
+			properties.put("taskDescription", task.getPropertyValue("description"));
+			properties.put("seen", new Long(new Date().getTime()).toString());
+			addNode("agent",properties)
+					.setParent(agents)
+					.setChild(new MemoNode("tasks").setChild(task))
+					.addParent(task.getChildByStringValue("resources").getChildByStringValue("human").getChildByStringValue("offered"))
+			;
 			
-			baseNode.addChild(new MemoNode("agent"))
+			
+			properties.clear();
+			properties.put("description", "Re-crew base");
+			properties.put("lat", "47.091983");
+			properties.put("lon", "9.342385");
+			properties.put("duration", "50");
+			properties.put("eta", "1345588000");
+			task = addTask(tasks,agents,properties);
+			
+			properties.clear();
+			properties.put("name", "PoliceOfficer#43432");
+			properties.put("lat", "47.093895");
+			properties.put("lon", "9.354835");
+			properties.put("resType", "PoliceOfficer");
+			properties.put("state", "Busy");
+			properties.put("taskDescription", task.getPropertyValue("description"));
+			properties.put("seen", new Long(new Date().getTime()).toString());
+			addNode("agent",properties)
 					.setParent(agents)
-					.setPropertyValue("name", "Firefighter#324333")
-					.setPropertyValue("lat", "47.097351")
-					.setPropertyValue("lon", "9.356282")
-					.setPropertyValue("resType", "FireFighter")
-					.setPropertyValue("state", "Busy")
-					.setPropertyValue("taskDescription", "Go to designated location")
-					.setPropertyValue("seen", new Long(new Date().getTime()).toString())
 					.setChild(new MemoNode("tasks").setChild(task))
-					.addParent(offered);
+					.setParent(task.getChildByStringValue("resources").getChildByStringValue("human").getChildByStringValue("offered"))
+			;
+
+			properties.clear();
+			properties.put("name", "PoliceCar#56722");
+			properties.put("lat", "47.093895");
+			properties.put("lon", "9.354835");
+			properties.put("resType", "PoliceCar");
+			properties.put("state", "Free");
+			properties.put("taskDescription", "");
+			properties.put("seen", new Long(new Date().getTime()).toString());			
+			addNode("agent",properties)
+					.setParent(agents)
+					.setChild(new MemoNode("tasks").setChild(task))
+					.addParent(task.getChildByStringValue("resources").getChildByStringValue("car"))
+			;
+			
+			properties.clear();
+			properties.put("description", "Respond to incident");
+			properties.put("lat", "47.075765");
+			properties.put("lon", "9.392449");
+			properties.put("duration", "150");
+			properties.put("eta", "1345586000");
+			task = addTask(tasks,agents,properties);
+
+			properties.clear();
+			properties.put("name", "Medic#412345");
+			properties.put("lat", "47.089207");
+			properties.put("lon", "9.34595");
+			properties.put("resType", "Medic");
+			properties.put("state", "Busy");
+			properties.put("taskDescription", task.getPropertyValue("description"));
+			properties.put("seen", new Long(new Date().getTime()).toString());
+			addNode("agent",properties)
+					.setParent(agents)
+					.setChild(new MemoNode("tasks").setChild(task))
+					.setParent(task.getChildByStringValue("resources").getChildByStringValue("human").getChildByStringValue("offered"))
+			;
+			
+			properties.clear();
+			properties.put("name", "Ambulance#3502");
+			properties.put("lat", "47.089207");
+			properties.put("lon", "9.34595");
+			properties.put("resType", "Ambulance");
+			properties.put("state", "Free");
+			properties.put("taskDescription", "");
+			properties.put("seen", new Long(new Date().getTime()).toString());
+			addNode("agent",properties)
+					.setParent(agents)
+					.setChild(new MemoNode("tasks").setChild(task))
+					.addParent(task.getChildByStringValue("resources").getChildByStringValue("car"))
+			;
+
+			
 			MemoNode.flushDB();
 		}
 	}

@@ -16,14 +16,13 @@ import javax.ws.rs.core.Response.Status;
 import com.almende.appservices.InitDemoListener;
 import com.almende.appservices.model.Agent;
 import com.chap.memo.memoNodes.MemoNode;
-
-import flexjson.JSONSerializer;
-import flexjson.JSONDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Path("/agent")
 //See: TaskProxy.java for /agent/{uuid}/tasks
 public class AgentProxy {
 	protected final static Logger log = Logger.getLogger(AgentProxy.class.getName());
+	static final ObjectMapper om = new ObjectMapper();
 
 	static MemoNode baseNode =null;
 	public AgentProxy(){
@@ -39,7 +38,7 @@ public class AgentProxy {
 			for (MemoNode agent : agents){
 				result.add(agent.getId().toString());
 			}
-			return Response.ok(new JSONSerializer().exclude("*.class").serialize(result)).build();
+			return Response.ok(om.writeValueAsString(result)).build();
 		} catch (Exception e){
 			log.warning("Exception in handling getAgent:"+e.getMessage());
 			return Response.status(Status.BAD_REQUEST).build();
@@ -50,13 +49,20 @@ public class AgentProxy {
 	@Consumes("text/plain,application/json")
 	@Produces("text/plain")
 	public Response createAgent(String json){
-		Agent agent = new JSONDeserializer<Agent>().deserializeInto(json, Agent.create());
+		Agent agent=Agent.create();
+		try {
+			agent = om.readerForUpdating(agent).readValue(json);
 		
 		//Until I have group support:
 		baseNode.addChild(agent.getNode());
 		//Done workaround
 		
 		return Response.ok(agent.getUuid()).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.serverError().build();
+		
 	}
 	
 	@Path("/{uuid}")
@@ -65,7 +71,7 @@ public class AgentProxy {
 	public Response getAgent(@PathParam("uuid") String uuid){
 		try {
 			Agent agent = new Agent(uuid);
-			return Response.ok(new JSONSerializer().exclude("*.class").serialize(agent)).build();
+			return Response.ok(om.writeValueAsString(agent)).build();
 		} catch (Exception e){
 			log.warning("Exception in handling getAgent:"+e.getMessage());
 			return Response.status(Status.BAD_REQUEST).build();
@@ -78,13 +84,18 @@ public class AgentProxy {
 	@Produces("text/plain")
 	public Response createOrUpdateAgent(String json, @PathParam("uuid") String uuid){
 		Agent agent = new Agent(uuid);
-		agent = new JSONDeserializer<Agent>().deserializeInto(json, agent);
+		try {
+			agent = om.readerForUpdating(agent).readValue(json);
 
-		//Until I have group support:
-		baseNode.addChild(agent.getNode());
-		//Done workaround
+			//Until I have group support:
+			baseNode.addChild(agent.getNode());
+			//Done workaround
 		
-		return Response.ok(agent.getUuid()).build();
+			return Response.ok(agent.getUuid()).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.serverError().build();
 	}	
 	
 	@Path("/{uuid}")	
@@ -92,12 +103,18 @@ public class AgentProxy {
 	@Consumes("text/plain,application/json")
 	@Produces("text/plain")
 	public Response createAgentWithId(String json){
-		Agent agent = new JSONDeserializer<Agent>().deserializeInto(json, Agent.create());
+		Agent agent = Agent.create();
+		try {
+			agent = om.readerForUpdating(agent).readValue(json);
+
+			//Until I have group support:
+			baseNode.addChild(agent.getNode());
+			//Done workaround
 		
-		//Until I have group support:
-		baseNode.addChild(agent.getNode());
-		//Done workaround
-		
-		return Response.ok(agent.getUuid()).build();
+			return Response.ok(agent.getUuid()).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.serverError().build();
 	}
 }

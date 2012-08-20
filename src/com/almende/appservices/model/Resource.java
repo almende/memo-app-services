@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import com.chap.memo.memoNodes.MemoNode;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -13,6 +14,7 @@ public class Resource implements Serializable {
 	private final static HashMap<String,String> typeMap = new HashMap<String,String>(6); 
 	
 	MemoNode myNode;
+	MemoNode task;
 	public Resource(){
 		typeMap.put("PoliceOfficer","human");
 		typeMap.put("FireFighter","human");
@@ -21,9 +23,10 @@ public class Resource implements Serializable {
 		typeMap.put("FireTruck","car");
 		typeMap.put("Ambulance","car");
 	};
-	public Resource(MemoNode resource){
+	public Resource(MemoNode resource, MemoNode task){
 		this();
 		myNode = resource;
+		this.task = task;
 	}
 	
 	public String getType(){
@@ -39,8 +42,16 @@ public class Resource implements Serializable {
 		} else {
 			result.put("role", myNode.getPropertyValue("resType"));						
 			result.put("name", myNode.getPropertyValue("name"));
-			result.put("status", myNode.getPropertyValue("state"));
+			result.put("state", getState());
 		}
 		return result;
+	}
+	@JsonIgnore
+	public String getState(){
+		MemoNode resList = task.getChildByStringValue("resources").getChildByStringValue("human");
+		if (myNode.isChildOf(resList.getChildByStringValue("offered")))return "offered";
+		if (myNode.isChildOf(resList.getChildByStringValue("accepted")))return "accepted";
+		if (myNode.isChildOf(resList.getChildByStringValue("rejected")))return "rejected";
+		return "unknown";
 	}
 }

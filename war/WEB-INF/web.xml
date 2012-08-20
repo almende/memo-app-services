@@ -53,7 +53,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>Memo</servlet-name>
-		<servlet-class>com.chap.memo.memoNodes.servlet.MemoTestServlet</servlet-class>
+		<servlet-class>com.chap.memo.memoNodes.servlet.MemoServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Memo</servlet-name>

@@ -37,17 +37,23 @@ public class Task implements Serializable {
 		for (MemoNode resType : myNode.getChildByStringValue("resources").getChildren()){
 			if (resType.getStringValue().equals("car")){
 				for (MemoNode resource : resType.getChildren()){
-					result.add(new Resource(resource));		
+					result.add(new Resource(resource,myNode));		
 				}
 			} else {
 				for (MemoNode list: resType.getChildren()){
 					for (MemoNode resource : list.getChildren()){
-						result.add(new Resource(resource));
+						result.add(new Resource(resource,myNode));
 					}
 				}
 			}
-			
 		}
 		return result;
+	}
+	public String getState(){
+		int count = myNode.getChildByStringValue("resources")
+				          .getChildByStringValue("human")
+				          .getChildByStringValue("offered")
+				          .getChildren().size();
+		return count>0?"pending":"operational";
 	}
 }
