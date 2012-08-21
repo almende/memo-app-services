@@ -54,4 +54,11 @@ public class Resource implements Serializable {
 		if (myNode.isChildOf(resList.getChildByStringValue("rejected")))return "rejected";
 		return "unknown";
 	}
+	@JsonIgnore
+	public void setState(String newState){
+		MemoNode resList = task.getChildByStringValue("resources").getChildByStringValue("human");
+		String currentState = getState();
+		resList.getChildByStringValue(currentState).delChild(myNode);
+		resList.getChildByStringValue(newState).addChild(myNode);
+	}
 }

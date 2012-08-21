@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.chap.memo.memoNodes.MemoNode;
+import com.eaio.uuid.UUID;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Task implements Serializable {
 	private static final long serialVersionUID = 712370311457400115L;
@@ -13,6 +15,13 @@ public class Task implements Serializable {
 	public Task(){}
 	public Task(MemoNode task) {
 		myNode = task;
+	}
+	public Task(String uuid) {
+		myNode = new MemoNode(new UUID(uuid));
+	}
+	@JsonIgnore
+	public MemoNode getNode(){
+		return myNode;
 	}
 	public String getId(){
 		return myNode.getId().toString();
@@ -34,6 +43,11 @@ public class Task implements Serializable {
 	}
 	public ArrayList<Resource> getResources(){
 		ArrayList<Resource> result = new ArrayList<Resource>();
+		MemoNode resources = myNode.getChildByStringValue("resources");
+		if (resources == null){
+			System.out.println("Task without resources?");
+			return new ArrayList<Resource>(0);
+		}
 		for (MemoNode resType : myNode.getChildByStringValue("resources").getChildren()){
 			if (resType.getStringValue().equals("car")){
 				for (MemoNode resource : resType.getChildren()){

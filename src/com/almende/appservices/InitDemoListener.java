@@ -75,6 +75,21 @@ public class InitDemoListener implements ServletContextListener  {
 			;
 			
 			properties.clear();
+			properties.put("name", "PoliceOfficer#145123");
+			properties.put("lat", "47.091895");
+			properties.put("lon", "9.344835");
+			properties.put("resType", "PoliceOfficer");
+			properties.put("state", "Busy");
+			properties.put("taskDescription", task.getPropertyValue("description"));
+			properties.put("seen", new Long(new Date().getTime()).toString());
+			MemoNode doubleAgent = addNode("agent",properties)
+					.setParent(agents)
+					.setChild(new MemoNode("tasks").setChild(task))
+					.setParent(task.getChildByStringValue("resources").getChildByStringValue("human").getChildByStringValue("offered"))
+			;
+					
+			
+			properties.clear();
 			properties.put("name", "PoliceCar#3502");
 			properties.put("lat", "47.089207");
 			properties.put("lon", "9.34595");
@@ -85,7 +100,7 @@ public class InitDemoListener implements ServletContextListener  {
 			addNode("agent",properties)
 					.setParent(agents)
 					.setChild(new MemoNode("tasks").setChild(task))
-					.addParent(task.getChildByStringValue("resources").getChildByStringValue("car"))
+					.setParent(task.getChildByStringValue("resources").getChildByStringValue("car"))
 			;
 
 			properties.clear();
@@ -99,10 +114,9 @@ public class InitDemoListener implements ServletContextListener  {
 			addNode("agent",properties)
 					.setParent(agents)
 					.setChild(new MemoNode("tasks").setChild(task))
-					.addParent(task.getChildByStringValue("resources").getChildByStringValue("human").getChildByStringValue("offered"))
+					.setParent(task.getChildByStringValue("resources").getChildByStringValue("human").getChildByStringValue("offered"))
 			;
-			
-			
+						
 			properties.clear();
 			properties.put("description", "Re-crew base");
 			properties.put("lat", "47.091983");
@@ -136,8 +150,12 @@ public class InitDemoListener implements ServletContextListener  {
 			addNode("agent",properties)
 					.setParent(agents)
 					.setChild(new MemoNode("tasks").setChild(task))
-					.addParent(task.getChildByStringValue("resources").getChildByStringValue("car"))
+					.setParent(task.getChildByStringValue("resources").getChildByStringValue("car"))
 			;
+			
+			doubleAgent
+				.setChild(doubleAgent.getChildByStringValue("tasks").setChild(task))
+				.setParent(task.getChildByStringValue("resources").getChildByStringValue("human").getChildByStringValue("offered"));
 			
 			properties.clear();
 			properties.put("description", "Respond to incident");
@@ -172,7 +190,7 @@ public class InitDemoListener implements ServletContextListener  {
 			addNode("agent",properties)
 					.setParent(agents)
 					.setChild(new MemoNode("tasks").setChild(task))
-					.addParent(task.getChildByStringValue("resources").getChildByStringValue("car"))
+					.setParent(task.getChildByStringValue("resources").getChildByStringValue("car"))
 			;
 
 			
