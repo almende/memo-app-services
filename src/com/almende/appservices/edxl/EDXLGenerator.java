@@ -1,6 +1,5 @@
 package com.almende.appservices.edxl;
 
-import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,7 +16,8 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
-import org.xml.sax.InputSource;
+
+import com.chap.memo.memoNodes.MemoNode;
 
 
 
@@ -65,16 +65,12 @@ public class EDXLGenerator {
 	}
 	
 	
-	public Document genResourceDeploymentStatus(){
-		final String template = 
-			  "<ReportResourceDeploymentStatus>"
-			  	+"<MessageContentType>ReportResourceDeploymentStatus</MessageContentType>"
-			  +"</ReportResourceDeploymentStatus>"
-		;
+	public Document newDocument(String type){
 		Document document = null;
 		try {
-		    document = builder.build(new InputSource(new StringReader(template)));
-		    Element root = document.getRootElement();
+		    document = new Document();
+		    Element root = new Element(type);
+		    document.setRootElement(root);
 		    root.setNamespace(Namespace.getNamespace("urn:oasis:names:tc:emergency:EDXL:RM:1.0:msg"));
 		    root.setAttribute(
 		    	    new Attribute("schemaLocation",
@@ -83,7 +79,7 @@ public class EDXLGenerator {
 		    for (Entry<String,Namespace> ns : namespaces.entrySet()){
 		    	root.addNamespaceDeclaration(ns.getValue());
 		    }
-		    
+		    setElementWithPath(root, new String[]{"MessageContentType"},type);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
@@ -93,21 +89,42 @@ public class EDXLGenerator {
 	@GET
 	@Produces("application/xml text/plain")
 	public Response getDoc(){
-		Document doc = genResourceDeploymentStatus();
+		Document doc = newDocument("ReportResourceDeploymentStatus");
 		Element root = doc.getRootElement();
-		setElementWithPath(root, new String[]{"MessageID"}, "ludo1");
+		setElementWithPath(root, new String[]{"MessageID"}, "001");
 		setElementWithPath(root, new String[]{"SendDateTime"}, sdf.format(new Date(System.currentTimeMillis())));
-		setElementWithPath(root, new String[]{"OriginatingMessageID"},"ludo0");
-		setElementWithPath(root, new String[]{"ContectInformation","ContactRole"},"Sender");
-		setElementWithPath(root, new String[]{"ResourceInformation","ResourceInfoElementID"},"001");
-		Element respInfo = setElementWithPath(root, new String[]{"ResourceInformation","ResponseInformation"},null);
-		setElementWithPath(respInfo,new String[]{"rm:PrecedingResourceInfoElementID"},"001");
-		setElementWithPath(respInfo, new String[]{"rm:ResponseType"},"Accept");
+		setElementWithPath(root, new String[]{"OriginatingMessageID"},"001");
+		setElementWithPath(root, new String[]{"ContactInformation","ContactRole"},"Sender");
 		
-		Element typeStructure = setElementWithPath(root, new String[]{"ResourceInformation","Resource","TypeStructure"},null);
-		setElementWithPath(typeStructure,new String[]{"rm:ValueListURN"},"urn:x-hazard:vocab:resourceTypes");
-		setElementWithPath(typeStructure, new String[]{"rm:Value"},"Small Animal Sheltering Team");
-		
+		MemoNode baseNode = MemoNode.getRootNode().getChildByStringValue("Memo-appservices demo");
+		MemoNode tasks = baseNode.getChildByStringValue("tasks");
+		int count=0;
+		for (MemoNode task : tasks.getChildren()){
+			System.out.println("task:"+task.getId()+":"+task.getPropertyValue("description"));
+			MemoNode resources = task.getChildByStringValue("resources");
+			for (MemoNode res : resources.getChildByStringValue("car").getChildren()){
+				System.out.println("Car:"+res.getId()+":"+res.getPropertyValue("resType"));
+				
+				Element elem = new Element("ResourceInformation");
+				setElementWithPath(elem, new String[]{"ResourceInfoElementID"},new Integer(count).toString());
+				Element respInfo = setElementWithPath(elem, new String[]{"ResponseInformation"},null);
+				setElementWithPath(respInfo,new String[]{"rm:PrecedingResourceInfoElementID"},new Integer(count).toString());
+				setElementWithPath(respInfo, new String[]{"rm:ResponseType"},"Accept");
+
+				Element resource = setElementWithPath(elem, new String[]{"Resource"},null);
+				
+				Element typeStructure = setElementWithPath(resource, new String[]{"TypeStructure"},null);
+				setElementWithPath(typeStructure,new String[]{"rm:ValueListURN"},"urn:x-hazard:vocab:resourceTypes");
+				setElementWithPath(typeStructure, new String[]{"rm:Value"},res.getPropertyValue("resType"));
+				
+				setElementWithPath(resource,new String[]{"ResourceID"},res.getId().toString());
+				setElementWithPath(resource,new String[]{"Name"},res.getPropertyValue("name"));
+				
+				root.addContent(elem);
+				count++;
+			}
+		}
+				
 		XMLOutputter outputter = new XMLOutputter();
         return Response.ok(outputter.outputString(doc)).build();
 	}

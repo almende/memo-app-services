@@ -32,7 +32,7 @@ public class InitDemoListener implements ServletContextListener  {
 		return res;
 	}
 	public static MemoNode addTask(MemoNode tasks, MemoNode agents, Map<String,String> properties){
-		MemoNode task = addNode("task",properties);
+		MemoNode task = tasks.addChild(addNode("task",properties));
 		MemoNode resources = task.addChild(new MemoNode("resources"));
 		MemoNode humans = resources.addChild(new MemoNode("human"));
 		
@@ -193,6 +193,74 @@ public class InitDemoListener implements ServletContextListener  {
 					.setParent(task.getChildByStringValue("resources").getChildByStringValue("car"))
 			;
 
+			properties.clear();
+			properties.put("name", "Firefighter#A");
+			properties.put("lat", "47.099029");
+			properties.put("lon", "9.354876");
+			properties.put("resType", "FireFighter");
+			properties.put("state", "Free");
+			properties.put("taskDescription", "");
+			properties.put("seen", new Long(new Date().getTime()).toString());
+			addNode("agent",properties)
+					.setParent(agents)
+			;
+			properties.clear();
+			properties.put("name", "Firefighter#B");
+			properties.put("lat", "47.097882");
+			properties.put("lon", "9.356824");
+			properties.put("resType", "FireFighter");
+			properties.put("state", "Free");
+			properties.put("taskDescription", "");
+			properties.put("seen", new Long(new Date().getTime()).toString());
+			addNode("agent",properties)
+					.setParent(agents)
+			;
+			properties.clear();
+			properties.put("name", "Firefighter#C");
+			properties.put("lat", "47.094102");
+			properties.put("lon", "9.351877");
+			properties.put("resType", "FireFighter");
+			properties.put("state", "Free");
+			properties.put("taskDescription", "");
+			properties.put("seen", new Long(new Date().getTime()).toString());
+			addNode("agent",properties)
+					.setParent(agents)
+			;
+			properties.clear();
+			properties.put("name", "Firefighter#D");
+			properties.put("lat", "47.094562");
+			properties.put("lon", "9.346127");
+			properties.put("resType", "FireFighter");
+			properties.put("state", "Free");
+			properties.put("taskDescription", "");
+			properties.put("seen", new Long(new Date().getTime()).toString());
+			addNode("agent",properties)
+					.setParent(agents)
+			;
+			properties.clear();
+			properties.put("name", "Firefighter#E");
+			properties.put("lat", "47.089858");
+			properties.put("lon", "9.347715");
+			properties.put("resType", "FireFighter");
+			properties.put("state", "Free");
+			properties.put("taskDescription", "");
+			properties.put("seen", new Long(new Date().getTime()).toString());
+			addNode("agent",properties)
+					.setParent(agents)
+			;
+			properties.clear();
+			properties.put("name", "FireTruck#F");
+			properties.put("lat", "47.097477");
+			properties.put("lon", "9.351979");
+			properties.put("resType", "FireTruck");
+			properties.put("state", "Free");
+			properties.put("taskDescription", "");
+			properties.put("seen", new Long(new Date().getTime()).toString());
+			addNode("agent",properties)
+					.setParent(agents)
+			;
+
+			
 			
 			MemoNode.flushDB();
 		}
