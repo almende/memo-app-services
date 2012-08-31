@@ -42,7 +42,12 @@ public class Agent {
 	public String getType(){
 		return myNode.getPropertyValue("resType");
 	}
-	
+	public String getLogin(){
+		return myNode.getPropertyValue("login");
+	}
+	public String getPassword(){
+		return myNode.getPropertyValue("password");
+	}
 	public void setUuid(String uuid){
 		this.myNode = new MemoNode(uuid);
 	}

@@ -62,6 +62,8 @@ public class InitDemoListener implements ServletContextListener  {
 			
 			properties.clear();
 			properties.put("name", "PoliceOfficer#324353");
+			properties.put("login", "1");
+			properties.put("password", "1");
 			properties.put("lat", "47.091895");
 			properties.put("lon", "9.344835");
 			properties.put("resType", "PoliceOfficer");
@@ -76,6 +78,8 @@ public class InitDemoListener implements ServletContextListener  {
 			
 			properties.clear();
 			properties.put("name", "PoliceOfficer#145123");
+			properties.put("login", "2");
+			properties.put("password", "2");
 			properties.put("lat", "47.091895");
 			properties.put("lon", "9.344835");
 			properties.put("resType", "PoliceOfficer");
@@ -105,6 +109,8 @@ public class InitDemoListener implements ServletContextListener  {
 
 			properties.clear();
 			properties.put("name", "Firefighter#324333");
+			properties.put("login", "3");
+			properties.put("password", "3");
 			properties.put("lat", "47.097351");
 			properties.put("lon", "9.356282");
 			properties.put("resType", "FireFighter");
@@ -127,6 +133,8 @@ public class InitDemoListener implements ServletContextListener  {
 			
 			properties.clear();
 			properties.put("name", "PoliceOfficer#43432");
+			properties.put("login", "4");
+			properties.put("password", "4");
 			properties.put("lat", "47.093895");
 			properties.put("lon", "9.354835");
 			properties.put("resType", "PoliceOfficer");
@@ -167,6 +175,8 @@ public class InitDemoListener implements ServletContextListener  {
 
 			properties.clear();
 			properties.put("name", "Medic#412345");
+			properties.put("login", "5");
+			properties.put("password", "5");
 			properties.put("lat", "47.089207");
 			properties.put("lon", "9.34595");
 			properties.put("resType", "Medic");
@@ -195,6 +205,8 @@ public class InitDemoListener implements ServletContextListener  {
 
 			properties.clear();
 			properties.put("name", "Firefighter#A");
+			properties.put("login", "2255");
+			properties.put("password", "5522");
 			properties.put("lat", "47.099029");
 			properties.put("lon", "9.354876");
 			properties.put("resType", "FireFighter");
@@ -206,6 +218,8 @@ public class InitDemoListener implements ServletContextListener  {
 			;
 			properties.clear();
 			properties.put("name", "Firefighter#B");
+			properties.put("login", "3366");
+			properties.put("password", "6633");
 			properties.put("lat", "47.097882");
 			properties.put("lon", "9.356824");
 			properties.put("resType", "FireFighter");
@@ -217,6 +231,8 @@ public class InitDemoListener implements ServletContextListener  {
 			;
 			properties.clear();
 			properties.put("name", "Firefighter#C");
+			properties.put("login", "4477");
+			properties.put("password", "7744");
 			properties.put("lat", "47.094102");
 			properties.put("lon", "9.351877");
 			properties.put("resType", "FireFighter");
@@ -228,6 +244,8 @@ public class InitDemoListener implements ServletContextListener  {
 			;
 			properties.clear();
 			properties.put("name", "Firefighter#D");
+			properties.put("login", "5588");
+			properties.put("password", "8855");
 			properties.put("lat", "47.094562");
 			properties.put("lon", "9.346127");
 			properties.put("resType", "FireFighter");
@@ -239,6 +257,8 @@ public class InitDemoListener implements ServletContextListener  {
 			;
 			properties.clear();
 			properties.put("name", "Firefighter#E");
+			properties.put("login", "6699");
+			properties.put("password", "9966");
 			properties.put("lat", "47.089858");
 			properties.put("lon", "9.347715");
 			properties.put("resType", "FireFighter");
