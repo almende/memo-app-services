@@ -31,7 +31,7 @@ public class InitDemoListener implements ServletContextListener  {
 		}
 		return res;
 	}
-	public static MemoNode addTask(MemoNode tasks, MemoNode agents, Map<String,String> properties){
+	public static MemoNode addTask(MemoNode tasks, Map<String,String> properties){
 		MemoNode task = tasks.addChild(addNode("task",properties));
 		MemoNode resources = task.addChild(new MemoNode("resources"));
 		MemoNode humans = resources.addChild(new MemoNode("human"));
@@ -51,6 +51,7 @@ public class InitDemoListener implements ServletContextListener  {
 			MemoNode baseNode = rootNode.addChild(new MemoNode("Memo-appservices demo"));
 			MemoNode tasks = baseNode.addChild(new MemoNode("tasks"));
 			MemoNode agents = baseNode.addChild(new MemoNode("agents"));
+			MemoNode scenarioBase = baseNode.addChild(new MemoNode("scenarioResources"));
 			
 			Map<String,String> properties = new HashMap<String,String>();
 			properties.put("description", "Go to designated location");
@@ -58,7 +59,7 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("lon", "9.392449");
 			properties.put("duration", "360");
 			properties.put("eta", "1345586369");
-			MemoNode task = addTask(tasks,agents,properties);
+			MemoNode task = addTask(tasks,properties);
 			
 			properties.clear();
 			properties.put("name", "PoliceOfficer#324353");
@@ -97,7 +98,7 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("name", "PoliceCar#3502");
 			properties.put("lat", "47.089207");
 			properties.put("lon", "9.34595");
-			properties.put("resType", "PoliceCar");
+			properties.put("resType", "PoliceVehicle");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
 			properties.put("seen", new Long(new Date().getTime()).toString());
@@ -129,7 +130,7 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("lon", "9.342385");
 			properties.put("duration", "50");
 			properties.put("eta", "1345588000");
-			task = addTask(tasks,agents,properties);
+			task = addTask(tasks,properties);
 			
 			properties.clear();
 			properties.put("name", "PoliceOfficer#43432");
@@ -151,7 +152,7 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("name", "PoliceCar#56722");
 			properties.put("lat", "47.093895");
 			properties.put("lon", "9.354835");
-			properties.put("resType", "PoliceCar");
+			properties.put("resType", "PoliceVehicle");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
 			properties.put("seen", new Long(new Date().getTime()).toString());			
@@ -171,7 +172,7 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("lon", "9.392449");
 			properties.put("duration", "150");
 			properties.put("eta", "1345586000");
-			task = addTask(tasks,agents,properties);
+			task = addTask(tasks,properties);
 
 			properties.clear();
 			properties.put("name", "Medic#412345");
@@ -179,7 +180,7 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("password", "5");
 			properties.put("lat", "47.089207");
 			properties.put("lon", "9.34595");
-			properties.put("resType", "Medic");
+			properties.put("resType", "Paramedic");
 			properties.put("state", "Busy");
 			properties.put("taskDescription", task.getPropertyValue("description"));
 			properties.put("seen", new Long(new Date().getTime()).toString());
@@ -193,7 +194,7 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("name", "Ambulance#3502");
 			properties.put("lat", "47.089207");
 			properties.put("lon", "9.34595");
-			properties.put("resType", "Ambulance");
+			properties.put("resType", "AmbulanceVehicle");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
 			properties.put("seen", new Long(new Date().getTime()).toString());
@@ -212,9 +213,11 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("resType", "FireFighter");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
+			properties.put("plan", "");
 			properties.put("seen", new Long(new Date().getTime()).toString());
 			addNode("agent",properties)
 					.setParent(agents)
+					.setParent(scenarioBase)
 			;
 			properties.clear();
 			properties.put("name", "Firefighter#B");
@@ -225,9 +228,11 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("resType", "FireFighter");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
+			properties.put("plan", "");
 			properties.put("seen", new Long(new Date().getTime()).toString());
 			addNode("agent",properties)
 					.setParent(agents)
+					.setParent(scenarioBase)
 			;
 			properties.clear();
 			properties.put("name", "Firefighter#C");
@@ -238,9 +243,11 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("resType", "FireFighter");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
+			properties.put("plan", "");
 			properties.put("seen", new Long(new Date().getTime()).toString());
 			addNode("agent",properties)
 					.setParent(agents)
+					.setParent(scenarioBase)
 			;
 			properties.clear();
 			properties.put("name", "Firefighter#D");
@@ -251,9 +258,11 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("resType", "FireFighter");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
+			properties.put("plan", "");
 			properties.put("seen", new Long(new Date().getTime()).toString());
 			addNode("agent",properties)
 					.setParent(agents)
+					.setParent(scenarioBase)
 			;
 			properties.clear();
 			properties.put("name", "Firefighter#E");
@@ -264,23 +273,24 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("resType", "FireFighter");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
+			properties.put("plan", "");
 			properties.put("seen", new Long(new Date().getTime()).toString());
 			addNode("agent",properties)
 					.setParent(agents)
+					.setParent(scenarioBase)
 			;
 			properties.clear();
 			properties.put("name", "FireTruck#F");
 			properties.put("lat", "47.097477");
 			properties.put("lon", "9.351979");
-			properties.put("resType", "FireTruck");
+			properties.put("resType", "FireVehicle");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
 			properties.put("seen", new Long(new Date().getTime()).toString());
 			addNode("agent",properties)
 					.setParent(agents)
+					.setParent(scenarioBase)
 			;
-
-			
 			
 			MemoNode.flushDB();
 		}

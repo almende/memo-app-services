@@ -36,6 +36,7 @@ public class TaskProxy {
 			}
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		} catch (Exception e) {
+			log.severe("Exception handling tasks request:"+e.getMessage()+" agentId:"+agentId);
 			e.printStackTrace();
 		}
 		return Response.serverError().build();
@@ -72,6 +73,7 @@ public class TaskProxy {
 				return Response.ok(result.toString()).build();
 			}
 		} catch (Exception e) {
+			log.severe("Exception handling task request:"+e.getMessage()+" agentId:"+agentId+" taskid:"+taskId);
 			e.printStackTrace();
 		}
 		return Response.serverError().build();

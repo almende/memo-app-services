@@ -28,6 +28,7 @@ public class EDXLGenerator {
 	final SimpleDateFormat sdf = new SimpleDateFormat(pattern);	    
 	
 	final static HashMap<String,Namespace> namespaces = new HashMap<String,Namespace>();
+	final static HashMap<String,String> statuses = new HashMap<String,String>();
 	
 	public EDXLGenerator(){
 		namespaces.put("xsi", Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance"));
@@ -36,7 +37,14 @@ public class EDXLGenerator {
 		namespaces.put("xnl", Namespace.getNamespace("xnl","urn:oasis:names:tc:ciq:xnl:3"));
 		namespaces.put("xal",Namespace.getNamespace("xal","urn:oasis:names:tc:ciq:xal:3"));
 		namespaces.put("geo-oasis", Namespace.getNamespace("geo-oasis","urn:oasis:names:tc:emergency:EDXL:HAVE:1.0:geo-oasis"));
+		
+		statuses.put("offered", "Pending");
+		statuses.put("accepted", "Accept");
+		statuses.put("rejected", "Reject");
+		
 	}
+	
+	
 	
 	public Element setElementWithPath(Element from, String[] path, String value){
 		try {
@@ -122,6 +130,27 @@ public class EDXLGenerator {
 				
 				root.addContent(elem);
 				count++;
+			}
+			for (MemoNode status : resources.getChildByStringValue("human").getChildren()){
+				for (MemoNode human: status.getChildren()){
+					Element elem = new Element("ResourceInformation");
+					setElementWithPath(elem, new String[]{"ResourceInfoElementID"},new Integer(count).toString());
+					Element respInfo = setElementWithPath(elem, new String[]{"ResponseInformation"},null);
+					setElementWithPath(respInfo,new String[]{"rm:PrecedingResourceInfoElementID"},new Integer(count).toString());
+					setElementWithPath(respInfo, new String[]{"rm:ResponseType"},statuses.get(status.getStringValue()));
+
+					Element resource = setElementWithPath(elem, new String[]{"Resource"},null);
+						
+					Element typeStructure = setElementWithPath(resource, new String[]{"TypeStructure"},null);
+					setElementWithPath(typeStructure,new String[]{"rm:ValueListURN"},"urn:x-hazard:vocab:resourceTypes");
+					setElementWithPath(typeStructure, new String[]{"rm:Value"},human.getPropertyValue("resType"));
+					
+					setElementWithPath(resource,new String[]{"ResourceID"},human.getId().toString());
+					setElementWithPath(resource,new String[]{"Name"},human.getPropertyValue("name"));
+						
+					root.addContent(elem);
+					count++;						
+				}
 			}
 		}
 				

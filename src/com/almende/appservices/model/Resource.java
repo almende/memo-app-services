@@ -18,10 +18,10 @@ public class Resource implements Serializable {
 	public Resource(){
 		typeMap.put("PoliceOfficer","human");
 		typeMap.put("FireFighter","human");
-		typeMap.put("Medic","human");
-		typeMap.put("PoliceCar","car");
-		typeMap.put("FireTruck","car");
-		typeMap.put("Ambulance","car");
+		typeMap.put("Paramedic","human");
+		typeMap.put("PoliceVehicle","car");
+		typeMap.put("FireVehicle","car");
+		typeMap.put("AmbulanceVehicle","car");
 	};
 	public Resource(MemoNode resource, MemoNode task){
 		this();
@@ -60,5 +60,8 @@ public class Resource implements Serializable {
 		String currentState = getState();
 		resList.getChildByStringValue(currentState).delChild(myNode);
 		resList.getChildByStringValue(newState).addChild(myNode);
+		if (newState.equals("rejected")){
+			myNode.setPropertyValue("taskDescription","");
+		}
 	}
 }

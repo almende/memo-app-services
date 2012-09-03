@@ -1,6 +1,8 @@
 package com.almende.appservices.edxl;
 
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -12,6 +14,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import com.almende.appservices.InitDemoListener;
+import com.chap.memo.memoNodes.MemoNode;
 
 @Path("/edxl")
 public class EDXLParser {
@@ -44,6 +49,7 @@ public class EDXLParser {
 			String resourceType = getStringByPath(res,new String[]{"Resource","TypeStructure","rm:Value"});
 			String resourceID = getStringByPath(res,new String[]{"Resource","ResourceID"});
 			String amountString = getStringByPath(res,new String[]{"AssignmentInformation","Quantity","rm:MeasuredQuantity","rm:Amount"});
+			String taskDescription = getStringByPath(res,new String[]{"AssignmentInformation","AnticipatedFunction"});
 			String location = "";
 			String dateTime = "";
 			NodeList schedules = res.getElementsByTagName("ScheduleInformation");
@@ -56,7 +62,48 @@ public class EDXLParser {
 					dateTime = getStringByPath(schedule,new String[]{"DateTime"});
 				};
 			}
-			System.out.println("--->"+resourceID+"|"+resourceType+":"+amountString + " at "+location + "@"+dateTime);
+			System.out.println(taskDescription+"--->"+resourceID+"|"+resourceType+":"+amountString + " at "+location + "@"+dateTime);
+			if (resourceType.equals("FireFighter") && !amountString.equals("") && !location.equals("")){
+				MemoNode baseNode = MemoNode.getRootNode().getChildByStringValue("Memo-appservices demo");
+				MemoNode tasks = baseNode.getChildByStringValue("tasks");
+				
+				Map<String,String> properties = new HashMap<String,String>();
+				properties.put("description", taskDescription);
+				//Parse:  146.03 -17.53 
+				String[] geoLoc = location.trim().split(" ");
+				properties.put("lat", geoLoc[0].trim());
+				properties.put("lon", geoLoc[1].trim());
+				properties.put("duration", "50");
+				properties.put("eta", "1345588000");
+				
+				MemoNode task = InitDemoListener.addTask(tasks, properties);
+				
+				MemoNode scenarioTasks = baseNode.getChildByStringValue("scenarioTask");
+				if (scenarioTasks == null){
+					scenarioTasks = baseNode.addChild(new MemoNode("scenarioTask"));
+				}
+				for (MemoNode oldtask : scenarioTasks.getChildren()){
+					oldtask.delete();
+				}
+				scenarioTasks.addChild(task);
+				
+				//Add 5 firefighters to task!
+				MemoNode scenarioBase = baseNode.getChildByStringValue("scenarioResources");
+				
+				
+				for (MemoNode agent: scenarioBase.getChildren()){
+					if (agent.getPropertyValue("resType").endsWith("Vehicle")){
+						agent
+						.setChild(new MemoNode("tasks").setChild(task))
+						.setParent(task.getChildByStringValue("resources").getChildByStringValue("car"));
+					} else {
+						agent
+						.setChild(new MemoNode("tasks").setChild(task))
+						.setParent(task.getChildByStringValue("resources").getChildByStringValue("human").getChildByStringValue("offered"));
+					}
+					agent.setPropertyValue("taskDescription",taskDescription);
+				}
+			}
 		}
 		return Response.ok().build();
 	}
