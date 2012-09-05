@@ -35,6 +35,11 @@ public class Task implements Serializable {
 	public String getLon(){
 		return myNode.getPropertyValue("lon");
 	}
+	public String getAmount(){
+		String res = myNode.getPropertyValue("amount");
+		if (res == null || res.equals("")) res="0";
+		return res;
+	}
 	public int getDuration(){
 		return Integer.parseInt(myNode.getPropertyValue("duration"));
 	}
@@ -66,8 +71,8 @@ public class Task implements Serializable {
 	public String getState(){
 		int count = myNode.getChildByStringValue("resources")
 				          .getChildByStringValue("human")
-				          .getChildByStringValue("offered")
+				          .getChildByStringValue("accepted")
 				          .getChildren().size();
-		return count>0?"pending":"operational";
+		return count>=Integer.parseInt(getAmount())?"operational":"pending";
 	}
 }

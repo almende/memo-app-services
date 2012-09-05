@@ -42,6 +42,12 @@ public class Agent {
 	public String getType(){
 		return myNode.getPropertyValue("resType");
 	}
+	public String getPlan(){
+		return myNode.getPropertyValue("plan");
+	}
+	public String getToLocation(){
+		return myNode.getPropertyValue("toLocation");
+	}
 	public String getLogin(){
 		return myNode.getPropertyValue("login");
 	}

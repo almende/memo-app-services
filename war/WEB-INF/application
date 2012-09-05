@@ -3,3 +3,4 @@ com.almende.appservices.proxy.GeoRSSProxy
 com.almende.appservices.proxy.TaskProxy
 com.almende.appservices.edxl.EDXLParser
 com.almende.appservices.edxl.EDXLGenerator
+com.almende.appservices.simulation.MagicAgent

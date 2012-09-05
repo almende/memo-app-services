@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+html {
+	height: 100%
+}
+
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0
+}
+
+.map {
+	height: 400px;
+	width: 400px;
+}
+
+.agent {
+	padding: 10px;
+	float: left;
+}
+
+.labels {
+	color: red;
+	background-color: white;
+	font-family: "Lucida Grande", "Arial", sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	text-align: center;
+	width: 40px;
+	border: 2px solid black;
+	white-space: nowrap;
+}
+</style>
+<title>BRIDGE simulator</title>
+<script type="text/javascript"
+	src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBAI8vyV2UkwGag1r7lJHn6hlzDTDAOads&sensor=false">
+	
+</script>
+<script src="/js/jquery-1.8.0.min.js"></script>
+<script src="/js/markerwithlabel.js"></script>
+<script src="/js/locationSimulator.js"></script>
+<script>
+	$(document).ready(function() {
+		var agentA = $("div#A").locationSimulator({
+			startAddress : "47.091019 9.347096",
+			endAddress : "47.095133 9.354544"
+		});
+		var agentB = $("div#B").locationSimulator({
+			startAddress : "47.09139 9.344395",
+			endAddress : "47.091019 9.347096"
+		});
+		var agentE = $("div#E").locationSimulator({
+			startAddress : "47.095133 9.354544",
+			endAddress : "47.075847 9.390177"			
+		});
+		
+		setTimeout(function() {
+			agentA.methods.showDirections();
+			agentB.methods.showDirections();
+			agentE.methods.showDirections();
+		}, 3000);
+		setInterval(function(){
+			agentA.methods.showCurrentPos();
+			agentB.methods.showCurrentPos();			
+			agentE.methods.showCurrentPos();			
+		},500);
+	});
+</script>
+<!-- 	get Plan for each agent  -->
+<!-- 	If plan: wait for event, wait  -->
+<!-- 	If plan: goto location, setup locationSimulator, refresh/update server every few -->
+<!-- 	seconds and show on map  -->
+<!-- 	If plan: get in vehicle, wait 30 seconds. -->
+</head>
+<body>
+	<div class="agent A" id="A"><h2>Firefighter A</h2></div>
+	<div class="agent B" id="B"><h2>Firefighter B</h2></div>
+	<div class="agent E" id="E"><h2>Firefighter C</h2></div>
+</body>
+</html>

@@ -16,6 +16,7 @@ import com.almende.appservices.model.Task;
 import com.chap.memo.memoNodes.MemoNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Path("/agent/{agentId}/tasks")
 public class TaskProxy {
@@ -32,8 +33,10 @@ public class TaskProxy {
 				for (MemoNode task: tasks.getChildren()){
 					result.add(om.valueToTree(new Task(task)));
 				}
+				System.out.println("returning:"+result.size());
 				return Response.ok(result.toString()).build();
 			}
+			System.out.println("No tasks!");
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		} catch (Exception e) {
 			log.severe("Exception handling tasks request:"+e.getMessage()+" agentId:"+agentId);
@@ -69,7 +72,7 @@ public class TaskProxy {
 		try {
 			Task task = new Task(taskId);
 			if (task != null){
-				ArrayNode result =om.valueToTree(task);
+				ObjectNode result =om.valueToTree(task);
 				return Response.ok(result.toString()).build();
 			}
 		} catch (Exception e) {

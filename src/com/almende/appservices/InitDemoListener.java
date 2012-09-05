@@ -208,8 +208,8 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("name", "Firefighter#A");
 			properties.put("login", "2255");
 			properties.put("password", "5522");
-			properties.put("lat", "47.099029");
-			properties.put("lon", "9.354876");
+			properties.put("lat", "47.091019");
+			properties.put("lon", "9.347096");
 			properties.put("resType", "FireFighter");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
@@ -223,8 +223,8 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("name", "Firefighter#B");
 			properties.put("login", "3366");
 			properties.put("password", "6633");
-			properties.put("lat", "47.097882");
-			properties.put("lon", "9.356824");
+			properties.put("lat", "47.09139");
+			properties.put("lon", "9.344395");
 			properties.put("resType", "FireFighter");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
@@ -238,8 +238,8 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("name", "Firefighter#C");
 			properties.put("login", "4477");
 			properties.put("password", "7744");
-			properties.put("lat", "47.094102");
-			properties.put("lon", "9.351877");
+			properties.put("lat", "47.090142");
+			properties.put("lon", "9.343003");
 			properties.put("resType", "FireFighter");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
@@ -253,8 +253,8 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("name", "Firefighter#D");
 			properties.put("login", "5588");
 			properties.put("password", "8855");
-			properties.put("lat", "47.094562");
-			properties.put("lon", "9.346127");
+			properties.put("lat", "47.089602");
+			properties.put("lon", "9.348415");
 			properties.put("resType", "FireFighter");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
@@ -268,8 +268,8 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("name", "Firefighter#E");
 			properties.put("login", "6699");
 			properties.put("password", "9966");
-			properties.put("lat", "47.089858");
-			properties.put("lon", "9.347715");
+			properties.put("lat", "47.097202");
+			properties.put("lon", "9.355306");
 			properties.put("resType", "FireFighter");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
@@ -281,8 +281,8 @@ public class InitDemoListener implements ServletContextListener  {
 			;
 			properties.clear();
 			properties.put("name", "FireTruck#F");
-			properties.put("lat", "47.097477");
-			properties.put("lon", "9.351979");
+			properties.put("lat", "47.091019");
+			properties.put("lon", "9.347096");
 			properties.put("resType", "FireVehicle");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");
