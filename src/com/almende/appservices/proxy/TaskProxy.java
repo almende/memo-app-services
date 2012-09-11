@@ -37,7 +37,7 @@ public class TaskProxy {
 				return Response.ok(result.toString()).build();
 			}
 			System.out.println("No tasks!");
-			return Response.status(Response.Status.BAD_REQUEST).build();
+			return Response.ok("[]").build();
 		} catch (Exception e) {
 			log.severe("Exception handling tasks request:"+e.getMessage()+" agentId:"+agentId);
 			e.printStackTrace();
@@ -84,16 +84,19 @@ public class TaskProxy {
 	
 	@Path("/{taskid}/accept")
 	@POST
+	@Produces("application/json")
 	public Response acceptTask(@PathParam("agentId") String agentId, @PathParam("taskid") String taskId){
 		return setTaskState(agentId,taskId,"accepted");
 	}
 	@Path("/{taskid}/reject")
 	@POST
+	@Produces("application/json")
 	public Response rejectTask(@PathParam("agentId") String agentId, @PathParam("taskid") String taskId){
 		return setTaskState(agentId,taskId,"rejected");
 	}
 	@Path("/{taskid}/withdraw")
 	@POST
+	@Produces("application/json")
 	public Response withdrawfromtask(@PathParam("agentId") String agentId, @PathParam("taskid") String taskId){
 		return setTaskState(agentId,taskId,"rejected");
 	}

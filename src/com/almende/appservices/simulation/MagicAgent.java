@@ -58,7 +58,8 @@ public class MagicAgent {
 	    	A.setPropertyValue("plan", "Drive towards incident location when E has entered the truck");
 	    	A.setPropertyValue("toLocation", location(task.getNode()));
 	    	E.setPropertyValue("plan", "Please get into the FireTruck");
-	    	E.setPropertyValue("toLocation", location(A));
+	    	E.setPropertyValue("toLocation", location(task.getNode()));
+	    	B.setPropertyValue("toLocation", location(task.getNode()));
 	    	if (moving(A) && close(A,E)){
 		    	A.setPropertyValue("plan", "Drive towards incident location.");
 		    	A.setPropertyValue("toLocation", location(task.getNode()));
@@ -82,7 +83,7 @@ public class MagicAgent {
 	    	A.setPropertyValue("plan", "Drive towards E when B has entered the truck.");
 	    	A.setPropertyValue("toLocation",location(E));
 	    	B.setPropertyValue("plan", "Please get into the FireTruck");
-	    	B.setPropertyValue("toLocation",location(A));
+	    	B.setPropertyValue("toLocation",location(E));
 	    	if (moving(A) && close(A,B)){
 		    	A.setPropertyValue("plan", "Drive towards E.");
 		    	A.setPropertyValue("toLocation",location(E));

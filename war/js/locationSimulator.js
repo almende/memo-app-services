@@ -36,7 +36,10 @@
 								mapOptions);
 					}
 					if (agent.directionsDisplay == null){
-						agent.directionsDisplay = new google.maps.DirectionsRenderer();
+						var rOptions = {
+								suppressMarkers:true
+						}
+						agent.directionsDisplay = new google.maps.DirectionsRenderer(rOptions);
 						agent.geocoder = new google.maps.Geocoder();
 						agent.directionsService = new google.maps.DirectionsService();						
 					}
@@ -44,7 +47,8 @@
 						'address' : agent.settings.startAddress
 					}, function(results, status) {
 						if (status == google.maps.GeocoderStatus.OK) {
-							agent.dyn.startPos = results[0].geometry.location;					
+							agent.dyn.startPos = results[0].geometry.location;
+							agent.settings.map.setCenter(agent.dyn.startPos);
 						}
 					});
 					agent.geocoder.geocode({
@@ -95,7 +99,9 @@
 								agent.methods.convertRouteToTimeLookup();
 							}
 						});
+						return true;
 					}
+					return false;
 				},
 				showCurrentPos : function() {
 					if (agent.dyn.startPos != null

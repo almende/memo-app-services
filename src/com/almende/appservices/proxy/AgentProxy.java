@@ -85,8 +85,7 @@ public class AgentProxy {
 	public Response createOrUpdateAgent(String json, @PathParam("uuid") String uuid){
 		Agent agent = new Agent(uuid);
 		try {
-			agent = om.readerForUpdating(agent).readValue(json);
-
+			om.readerForUpdating(agent).readValue(json);
 			//Until I have group support:
 			baseNode.addChild(agent.getNode());
 			//Done workaround

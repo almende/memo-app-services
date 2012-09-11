@@ -45,43 +45,87 @@ body {
 <script src="/js/jquery-1.8.0.min.js"></script>
 <script src="/js/markerwithlabel.js"></script>
 <script src="/js/locationSimulator.js"></script>
+<script src="/js/jquery.rest.min.js"></script>
+<script src="/js/json2.js"></script>
 <script src="/js/askREST_cache.js"></script>
 <script>
+	var agentCache = null;
+	var agents={
+			"A_plan":{toLocation:"",startAddress:"",endAddress:"",simulator:null},
+			"B_plan":{toLocation:"",startAddress:"",endAddress:"",simulator:null},
+			"E_plan":{toLocation:"",startAddress:"",endAddress:"",simulator:null},
+	};
+	var wrap = function(func,parmVal){
+		return function(){
+			if (!func(parmVal)){
+				setTimeout(1000,wrap(func,parmVal));
+			}
+		}
+	}
+	var close = function (a,b){
+// 		var res= Math.abs(a.lat - b.lat)<0.0001 && Math.abs(a.lon - b.lon)<0.0001;
+// 		console.log(a,b,res);
+		return Math.abs(a.lat - b.lat)<0.0001 && Math.abs(a.lon - b.lon)<0.0001;
+	}
+	var renderer = function(arr,oldData,cache){
+		arr.map(function (agent){
+			if (agent.login == "2255") agents["A"]=agent;
+			if (agent.login == "3366") agents["B"]=agent;
+			if (agent.login == "6699") agents["E"]=agent;
+		});
+		["A","B","E"].map(function(label){
+			var agent = agents[label];
+			var plan = agents[label+"_plan"];
+			if (plan.toLocation == "" || !close({lat:plan.toLocation.split(" ")[0],lon:plan.toLocation.split(" ")[1]},{lat:agent.toLocation.split(" ")[0],lon:agent.toLocation.split(" ")[1]})){
+				if (agent.toLocation == "") agent.toLocation = agent.lat+" "+agent.lon;
+				plan.toLocation = agent.toLocation;
+			}
+			if (plan.toLocation != plan.endAddress){
+				plan.startAddress = agent.lat+" "+agent.lon;
+				plan.endAddress = plan.toLocation;
+				plan.simulator = $("#"+label).locationSimulator({
+					startAddress: plan.startAddress,
+					endAddress: plan.endAddress
+				});
+				console.log("Setting up directions:"+label);
+				setTimeout(wrap(plan.simulator.methods.showDirections,null),2000);
+			}
+		});
+		console.log(agents);
+	}
+	
 	$(document).ready(function() {
-		var agentA = $("div#A").locationSimulator({
-			startAddress : "47.099029 9.354876",
-			endAddress : "47.089858 9.347715"
-		});
-		var agentB = $("div#B").locationSimulator({
-			startAddress : "47.097882 9.356824",
-			endAddress : "47.099029 9.354876"
-		});
-		var agentE = $("div#E").locationSimulator({
-			startAddress : "47.089858 9.347715",
-			endAddress : "47.075847 9.390177"			
-		});
-		
-		setTimeout(function() {
-			agentA.methods.showDirections();
-			agentB.methods.showDirections();
-			agentE.methods.showDirections();
-		}, 3000);
+		if (!caches.exists("agents")){
+			session.appServices="";
+			agentCache = new ASKCache("agents","agent/",null,"uuid",session,true);
+			agentCache.addRenderer("all",renderer);
+		};
 		setInterval(function(){
-			agentA.methods.showCurrentPos();
-			agentB.methods.showCurrentPos();			
-			agentE.methods.showCurrentPos();			
-		},3000);
+			["A","B","E"].map(function(label){
+				var plan = agents[label+"_plan"];
+				if (plan.simulator != null) plan.simulator.methods.showCurrentPos();
+			});
+		},500);
+		setInterval(function(){
+			["A","B","E"].map(function(label){
+				var plan = agents[label+"_plan"];
+				var agent = agents[label];
+				if (plan.simulator != null) {
+					var pos = plan.simulator.methods.getCurrentPos();
+					if (pos != null && !close({lat:agent.lat,lon:agent.lon},{lat:pos.lat(),lon:pos.lng()})){
+						agent.lat = pos.lat().toString();
+						agent.lon = pos.lng().toString();						
+						agentCache.addElement(agent.uuid,agent);
+					} 
+				}
+			});
+		},500);
 	});
 </script>
-<!-- 	get Plan for each agent  -->
-<!-- 	If plan: wait for event, wait  -->
-<!-- 	If plan: goto location, setup locationSimulator, refresh/update server every few -->
-<!-- 	seconds and show on map  -->
-<!-- 	If plan: get in vehicle, wait 30 seconds. -->
 </head>
 <body>
 	<div class="agent A" id="A"><h2>Firefighter A</h2></div>
 	<div class="agent B" id="B"><h2>Firefighter B</h2></div>
-	<div class="agent E" id="E"><h2>Firefighter C</h2></div>
+	<div class="agent E" id="E"><h2>Firefighter E</h2></div>
 </body>
 </html>

@@ -4,6 +4,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -20,6 +21,7 @@ import com.chap.memo.memoNodes.MemoNode;
 @Path("/edxl")
 public class EDXLParser {
 	private static SAXBuilder builder = new SAXBuilder();
+	static final Logger log = Logger.getLogger("EDXLParser");
 	
 	private String getStringByPath(Element from, String[] path){
 		Element elem= getElementByPath(from,path);
@@ -175,6 +177,7 @@ public class EDXLParser {
 		    return Response.status(Response.Status.BAD_REQUEST).build();
 		} catch (Exception e) {
 			e.printStackTrace();
+			log.warning("Exception parsing EDXL:"+e.getMessage());
 		} 
 		return Response.serverError().build();
 	}

@@ -57,6 +57,7 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("description", "Go to designated location");
 			properties.put("lat", "47.075765");
 			properties.put("lon", "9.392449");
+			properties.put("amount", "2");
 			properties.put("duration", "360");
 			properties.put("eta", "1345586369");
 			MemoNode task = addTask(tasks,properties);
@@ -128,6 +129,7 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("description", "Re-crew base");
 			properties.put("lat", "47.091983");
 			properties.put("lon", "9.342385");
+			properties.put("amount", "1");
 			properties.put("duration", "50");
 			properties.put("eta", "1345588000");
 			task = addTask(tasks,properties);
@@ -170,6 +172,7 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("description", "Respond to incident");
 			properties.put("lat", "47.075765");
 			properties.put("lon", "9.392449");
+			properties.put("amount", "1");
 			properties.put("duration", "150");
 			properties.put("eta", "1345586000");
 			task = addTask(tasks,properties);
@@ -268,8 +271,8 @@ public class InitDemoListener implements ServletContextListener  {
 			properties.put("name", "Firefighter#E");
 			properties.put("login", "6699");
 			properties.put("password", "9966");
-			properties.put("lat", "47.097202");
-			properties.put("lon", "9.355306");
+			properties.put("lat", "47.095133");
+			properties.put("lon", "9.354544");
 			properties.put("resType", "FireFighter");
 			properties.put("state", "Free");
 			properties.put("taskDescription", "");

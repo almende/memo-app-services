@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+  <cron>
+      <url>/magic</url>
+      <schedule>every 1 minutes</schedule>
+      <description>Keep alive exercise</description>
+  </cron>
+</cronentries>
