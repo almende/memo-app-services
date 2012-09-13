@@ -34,9 +34,9 @@ public class AgentProxy {
 	public Response getAgents(){
 		try {
 			ArrayList<MemoNode> agents = baseNode.getChildren();
-			ArrayList<String> result =  new ArrayList<String>(agents.size());
+			ArrayList<Agent> result =  new ArrayList<Agent>(agents.size());
 			for (MemoNode agent : agents){
-				result.add(agent.getId().toString());
+				result.add(new Agent(agent.getId().toString()));
 			}
 			return Response.ok(om.writeValueAsString(result)).build();
 		} catch (Exception e){
@@ -86,10 +86,10 @@ public class AgentProxy {
 		Agent agent = new Agent(uuid);
 		try {
 			om.readerForUpdating(agent).readValue(json);
-			//Until I have group support:
-			baseNode.addChild(agent.getNode());
-			//Done workaround
-		
+			if (!agent.getNode().isChildOf(baseNode)){
+				baseNode.addChild(agent.getNode());
+			}
+			
 			return Response.ok(agent.getUuid()).build();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -105,10 +105,9 @@ public class AgentProxy {
 		Agent agent = Agent.create();
 		try {
 			agent = om.readerForUpdating(agent).readValue(json);
-
-			//Until I have group support:
-			baseNode.addChild(agent.getNode());
-			//Done workaround
+			if (!agent.getNode().isChildOf(baseNode)){
+				baseNode.addChild(agent.getNode());
+			}
 		
 			return Response.ok(agent.getUuid()).build();
 		} catch (Exception e) {

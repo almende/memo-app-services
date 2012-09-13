@@ -72,6 +72,7 @@ body {
 			if (agent.login == "2255") agents["A"]=agent;
 			if (agent.login == "3366") agents["B"]=agent;
 			if (agent.login == "6699") agents["E"]=agent;
+			if (agent.name == "FireTruck#F") agents["F"]=agent;
 		});
 		["A","B","E"].map(function(label){
 			var agent = agents[label];
@@ -97,7 +98,7 @@ body {
 	$(document).ready(function() {
 		if (!caches.exists("agents")){
 			session.appServices="";
-			agentCache = new ASKCache("agents","agent/",null,"uuid",session,true);
+			agentCache = new ASKCache("agents","agent/",null,"uuid",session,false);
 			agentCache.addRenderer("all",renderer);
 		};
 		setInterval(function(){
@@ -116,10 +117,20 @@ body {
 						agent.lat = pos.lat().toString();
 						agent.lon = pos.lng().toString();						
 						agentCache.addElement(agent.uuid,agent);
+						if (label == "A"){
+							agent=agents["F"];
+							if (typeof(agent) == "undefined"){
+								console.log("couln't find firetruck F!");
+								return;
+							}
+							agent.lat = pos.lat().toString();
+							agent.lon = pos.lng().toString();						
+							agentCache.addElement(agent.uuid,agent);
+						}
 					} 
 				}
 			});
-		},500);
+		},5000);
 	});
 </script>
 </head>

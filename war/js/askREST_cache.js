@@ -189,9 +189,13 @@ ASKCache.prototype.storeList = function(myData){
 	var cache = this;
 	if (cache.onChangeCBs && cache.onChangeCBs.length > 0){
 		function call(a,b){
-			cache.onChangeCBs.map(function(item){
-				if (typeof item == "function") item(a,b);
-			});
+			try{ 
+				cache.onChangeCBs.map(function(item){
+					if (typeof item == "function") item(a,b);
+				});
+			} catch (e){
+				console.log("Error calling onChangeCBs:",e);
+			}
 		}
 		var oldList = this.getList();
 		if (oldList != null){
@@ -308,11 +312,14 @@ ASKCache.prototype.sync =	function(){
 		if (localStorage[cache.label+"_changes"]!="true"){
 			var success = true;
 			try {
-				var json=JSON.parse(jsonTxt);
+				var json = jsonTxt;
+				if (typeof(jsonTxt) == "string"){
+					json=JSON.parse(jsonTxt);
+				} 
 				cache.storeArray(json);
 				cache.lastUpdate=new Date().getTime();
 			} catch (e){
-				console.log("["+cache.label+"]: Error: failed to parse server data: '"+jsonTxt+"' ",e);
+				console.log("["+cache.label+"]: Error: failed to parse server data: '"+jsonTxt+"' ",json,e);
 				success = false;
 			}
 			if ( success ) {
@@ -343,7 +350,10 @@ ASKCache.prototype.sync =	function(){
 		}
 		if (doStore){
 			try {
-				var json=JSON.parse(jsonTxt);
+				var json=jsonTxt;
+				if (typeof(jsonTxt) == "string"){
+					json=JSON.parse(jsonTxt);
+				}
 				var arr = cache.getList();
 				if (!arr) arr={};
 				arr[id]={"id":id,"state":"normal","data":json};

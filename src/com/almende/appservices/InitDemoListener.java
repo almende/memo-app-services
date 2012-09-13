@@ -43,6 +43,7 @@ public class InitDemoListener implements ServletContextListener  {
 		return task;
 	}
 	
+	@SuppressWarnings("unused")
 	public static void initDemoModel(){
 		//generate example memo db
 		MemoNode rootNode = MemoNode.getRootNode();
@@ -52,8 +53,8 @@ public class InitDemoListener implements ServletContextListener  {
 			MemoNode tasks = baseNode.addChild(new MemoNode("tasks"));
 			MemoNode agents = baseNode.addChild(new MemoNode("agents"));
 			MemoNode scenarioBase = baseNode.addChild(new MemoNode("scenarioResources"));
-			
 			Map<String,String> properties = new HashMap<String,String>();
+/*			
 			properties.put("description", "Go to designated location");
 			properties.put("lat", "47.075765");
 			properties.put("lon", "9.392449");
@@ -206,7 +207,7 @@ public class InitDemoListener implements ServletContextListener  {
 					.setChild(new MemoNode("tasks").setChild(task))
 					.setParent(task.getChildByStringValue("resources").getChildByStringValue("car"))
 			;
-
+*/
 			properties.clear();
 			properties.put("name", "Firefighter#A");
 			properties.put("login", "2255");

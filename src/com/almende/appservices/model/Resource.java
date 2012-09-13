@@ -39,6 +39,7 @@ public class Resource implements Serializable {
 		ObjectNode result = om.createObjectNode();
 		if (getType().equals("car")){
 			result.put("carType", myNode.getPropertyValue("resType"));			
+			result.put("name", myNode.getPropertyValue("name"));
 		} else {
 			result.put("role", myNode.getPropertyValue("resType"));						
 			result.put("name", myNode.getPropertyValue("name"));

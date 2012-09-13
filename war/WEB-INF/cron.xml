@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
   <cron>
-      <url>/magic</url>
+      <url>/magic?cron=true</url>
       <schedule>every 1 minutes</schedule>
-      <description>Keep alive exercise</description>
+      <description>Perform tricks, multiplies to once every 20 seconds</description>
   </cron>
 </cronentries>

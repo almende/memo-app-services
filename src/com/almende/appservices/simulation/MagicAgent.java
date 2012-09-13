@@ -1,17 +1,26 @@
 package com.almende.appservices.simulation;
 
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
+
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import com.almende.appservices.model.Task;
 import com.chap.memo.memoNodes.MemoNode;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
 
 @Path("magic")
 public class MagicAgent {
 
+	static Queue queue = QueueFactory.getDefaultQueue();
+	
+	
 	//Periodic update agent's plan according to:
 	static float oldLat=0,oldLon=0;
 	
@@ -36,8 +45,18 @@ public class MagicAgent {
 		if (Math.abs(oldLat-lat)+Math.abs(oldLon-lon) > 0.0005) return true;
 		return false;
 	}
+	@POST
+	public Response performPost(@QueryParam("cron") String cron){
+		return perform(cron);
+	}
 	@GET
-	public Response perform(){
+	public Response perform(@QueryParam("cron") String cron){
+		if (cron != null && cron.equals("true")){
+			//schedule two calls more:
+			queue.add(withUrl("/magic").countdownMillis(20000).param("cron", "false"));
+			queue.add(withUrl("/magic").countdownMillis(40000).param("cron", "false"));
+		}
+		
 		MemoNode baseNode = MemoNode.getRootNode().getChildByStringValue("Memo-appservices demo");
 		if (baseNode.getChildByStringValue("scenarioTask") == null) return Response.ok("No task given yet").build();
 		List<MemoNode> scenarioTasks = baseNode.getChildByStringValue("scenarioTask").getChildren();
@@ -54,23 +73,32 @@ public class MagicAgent {
 			if (agent.getPropertyValue("login").equals("3366")) B = agent;
 			if (agent.getPropertyValue("login").equals("6699")) E = agent;
 		}
-	    if (close(A,E)){
-	    	A.setPropertyValue("plan", "Drive towards incident location when E has entered the truck");
+		if (close(A,task.getNode())){
+			A.setPropertyValue("plan", "Report to incident commander");
+			A.setPropertyValue("toLocation", location(task.getNode()));
+			B.setPropertyValue("plan", "Report to incident commander");
+			B.setPropertyValue("toLocation", location(task.getNode()));
+			E.setPropertyValue("plan", "Report to incident commander");
+			E.setPropertyValue("toLocation", location(task.getNode()));
+	    	return Response.ok("Arrived at incident").build();
+		} 
+		if (close(A,E) || E.getPropertyValue("toLocation").equals(location(task.getNode()))){
 	    	A.setPropertyValue("toLocation", location(task.getNode()));
-	    	E.setPropertyValue("plan", "Please get into the FireTruck");
-	    	E.setPropertyValue("toLocation", location(task.getNode()));
 	    	B.setPropertyValue("toLocation", location(task.getNode()));
-	    	if (moving(A) && close(A,E)){
+	    	E.setPropertyValue("toLocation", location(task.getNode()));
+	    	if (moving(A)){
 		    	A.setPropertyValue("plan", "Drive towards incident location.");
-		    	A.setPropertyValue("toLocation", location(task.getNode()));
 		    	E.setPropertyValue("plan", "Stay in truck while traveling");
-		    	A.setPropertyValue("toLocation", location(task.getNode()));
-		    	B.setPropertyValue("toLocation", location(task.getNode()));
+		    	B.setPropertyValue("plan", "Stay in truck while traveling");
 		    	return Response.ok("Drive together to incident").build();
-	    	}
-	    	return Response.ok("Waiting for E to get into truck").build();
+			} else {
+				A.setPropertyValue("plan", "Drive towards incident location when E has entered the truck");
+				E.setPropertyValue("plan", "Please get into the FireTruck");
+		    	B.setPropertyValue("plan", "Stay in truck while traveling");
+		    	return Response.ok("Waiting for E to enter the truck").build();
+			}
 	    }
-		if (!close(A,B)){
+		if (!close(A,B) && !moving(A)){
 	    	A.setPropertyValue("plan", "Please get into the FireTruck");
 	    	A.setPropertyValue("toLocation",location(A));
 	    	B.setPropertyValue("plan", "Proceed to the FireTruck at the base.");
@@ -79,20 +107,21 @@ public class MagicAgent {
 	    	E.setPropertyValue("toLocation",location(E));
 	    	return Response.ok("Waiting for B to reach A").build();
 		}
-		if (close(A,B)){
-	    	A.setPropertyValue("plan", "Drive towards E when B has entered the truck.");
+    	A.setPropertyValue("plan", "Drive towards E when B has entered the truck.");
+    	A.setPropertyValue("toLocation",location(E));
+    	B.setPropertyValue("plan", "Please get into the FireTruck");
+    	B.setPropertyValue("toLocation",location(E));
+    	E.setPropertyValue("plan", "Wait for the FireTruck at your present location.");
+    	E.setPropertyValue("toLocation",location(E));
+    	if (moving(A) && moving(B)){
+	    	A.setPropertyValue("plan", "Drive towards E.");
 	    	A.setPropertyValue("toLocation",location(E));
-	    	B.setPropertyValue("plan", "Please get into the FireTruck");
+	    	B.setPropertyValue("plan", "Stay in truck while traveling");
 	    	B.setPropertyValue("toLocation",location(E));
-	    	if (moving(A) && close(A,B)){
-		    	A.setPropertyValue("plan", "Drive towards E.");
-		    	A.setPropertyValue("toLocation",location(E));
-		    	B.setPropertyValue("plan", "Stay in truck while traveling");
-		    	B.setPropertyValue("toLocation",location(E));
-		    	return Response.ok("Waiting for A & B  to reach E").build();
-	    	}
-	    	return Response.ok("Waiting for B to get into truck").build();
-		}
-		return Response.ok("Nothing?").build();
+	    	E.setPropertyValue("plan", "Wait for the FireTruck at your present location.");
+	    	E.setPropertyValue("toLocation",location(E));
+	    	return Response.ok("Waiting for A & B  to reach E").build();
+    	}
+    	return Response.ok("Waiting for B to get into truck").build();
 	}
 }
