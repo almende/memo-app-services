@@ -50,6 +50,7 @@ body {
 <script src="/js/askREST_cache.js"></script>
 <script>
 	var agentCache = null;
+	var timeWarp = 1;
 	var agents={
 			"A_plan":{toLocation:"",startAddress:"",endAddress:"",simulator:null},
 			"B_plan":{toLocation:"",startAddress:"",endAddress:"",simulator:null},
@@ -89,7 +90,7 @@ body {
 					endAddress: plan.endAddress
 				});
 				console.log("Setting up directions:"+label);
-				setTimeout(wrap(plan.simulator.methods.showDirections,null),2000);
+				setTimeout(wrap(plan.simulator.methods.showDirections,null),10000);
 			}
 		});
 		console.log(agents);
@@ -104,15 +105,27 @@ body {
 		setInterval(function(){
 			["A","B","E"].map(function(label){
 				var plan = agents[label+"_plan"];
-				if (plan.simulator != null) plan.simulator.methods.showCurrentPos();
+				var now = new Date().getTime();
+				if (plan.simulator != null){
+					if (timeWarp != 1){
+						var delta = now - plan.simulator.settings.startTime;
+						now = now+delta*timeWarp;
+					}
+					plan.simulator.methods.showCurrentPos(now);
+				}
 			});
 		},500);
 		setInterval(function(){
 			["A","B","E"].map(function(label){
 				var plan = agents[label+"_plan"];
 				var agent = agents[label];
+				var now = new Date().getTime();
 				if (plan.simulator != null) {
-					var pos = plan.simulator.methods.getCurrentPos();
+					if (timeWarp != 1){
+						var delta = now - plan.simulator.settings.startTime;
+						now = now+delta*timeWarp;
+					}
+					var pos = plan.simulator.methods.getCurrentPos(now);
 					if (pos != null && !close({lat:agent.lat,lon:agent.lon},{lat:pos.lat(),lon:pos.lng()})){
 						agent.lat = pos.lat().toString();
 						agent.lon = pos.lng().toString();						
@@ -138,5 +151,6 @@ body {
 	<div class="agent A" id="A"><h2>Firefighter A</h2></div>
 	<div class="agent B" id="B"><h2>Firefighter B</h2></div>
 	<div class="agent E" id="E"><h2>Firefighter E</h2></div>
+<!-- 	<input value="1" class="timeWarp" onChange="timeWarp = $(this).val()"> -->
 </body>
 </html>

@@ -32,7 +32,7 @@ public class MagicAgent {
 		Float lon1=Float.parseFloat(one.getPropertyValue("lon")); 
 		Float lat2=Float.parseFloat(theOther.getPropertyValue("lat")); 
 		Float lon2=Float.parseFloat(theOther.getPropertyValue("lon")); 
-		if (Math.abs(lat2-lat1) < 0.0003 && Math.abs(lon2-lon1) < 0.0003) return true;
+		if (Math.abs(lat2-lat1) < 0.001 && Math.abs(lon2-lon1) < 0.001) return true;
 		return false;
 	}
 	private boolean moving(MemoNode node){
@@ -53,15 +53,26 @@ public class MagicAgent {
 	public Response perform(@QueryParam("cron") String cron){
 		if (cron != null && cron.equals("true")){
 			//schedule two calls more:
+			queue.add(withUrl("/magic").countdownMillis(10000).param("cron", "false"));
 			queue.add(withUrl("/magic").countdownMillis(20000).param("cron", "false"));
+			queue.add(withUrl("/magic").countdownMillis(30000).param("cron", "false"));
 			queue.add(withUrl("/magic").countdownMillis(40000).param("cron", "false"));
+			queue.add(withUrl("/magic").countdownMillis(50000).param("cron", "false"));
 		}
 		
 		MemoNode baseNode = MemoNode.getRootNode().getChildByStringValue("Memo-appservices demo");
-		if (baseNode.getChildByStringValue("scenarioTask") == null) return Response.ok("No task given yet").build();
+		if (baseNode.getChildByStringValue("scenarioTask") == null){
+			oldLat=0;
+			oldLon=0;
+			return Response.ok("No task given yet").build();
+		}
 		List<MemoNode> scenarioTasks = baseNode.getChildByStringValue("scenarioTask").getChildren();
 		
-		if (scenarioTasks.size() <=0) return Response.ok("No task given yet").build();
+		if (scenarioTasks.size() <=0){
+			oldLat=0;
+			oldLon=0;
+			return Response.ok("No task given yet").build();
+		}
 		Task task = new Task(scenarioTasks.get(0));
 		if (task.getState().equals("pending")) return Response.ok("Waiting for the firefighters to accept the task").build();
 		

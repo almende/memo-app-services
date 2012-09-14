@@ -80,7 +80,7 @@ ASKCache.prototype.render = function(){
 	var cache = this;
 	//var page = $.mobile.activePage;
 	var page=null;
-	var render_list = this.renderers["all"];  //all functions send as request
+	var render_list = cache.renderers["all"];  //all functions send as request
 	//alert(render_list);
 	/*if (page && page != null){ //it is null now
 		var page_list = this.renderers[page.jqmData("url")];

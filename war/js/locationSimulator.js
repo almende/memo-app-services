@@ -103,10 +103,10 @@
 					}
 					return false;
 				},
-				showCurrentPos : function() {
+				showCurrentPos : function(now) {
 					if (agent.dyn.startPos != null
 							&& agent.dyn.endPos != null) {
-						var currentPos = agent.methods.getCurrentPos();
+						var currentPos = agent.methods.getCurrentPos(now);
 						
 						var mOptions = {
 							position : currentPos,
